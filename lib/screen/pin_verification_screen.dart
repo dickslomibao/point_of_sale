@@ -7,8 +7,8 @@ import 'package:point_of_sales/screen/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PinVerificationScreen extends StatelessWidget {
-  const PinVerificationScreen({super.key});
-
+  PinVerificationScreen({super.key});
+  final TextEditingController pin = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +68,7 @@ class PinVerificationScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       keyboardType: TextInputType.number,
                       activeBorderColor: Colors.green,
+                      controller: pin,
                       onComplete: (value) async {
                         if (value.length == 4) {
                           final prefernces =
@@ -95,6 +96,7 @@ class PinVerificationScreen extends StatelessWidget {
                                 'features',
                                 data[AccountDbHelper.colFeatures].toString(),
                               );
+                              pin.clear();
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (context) => MainScren(),

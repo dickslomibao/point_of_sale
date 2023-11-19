@@ -5,6 +5,9 @@ import 'package:point_of_sales/screen/settings.screen.dart';
 import 'package:point_of_sales/screen/account_screen.dart';
 import 'package:point_of_sales/screen/switchstore_screen.dart';
 import 'package:point_of_sales/screen/transaction_screen.dart';
+import 'package:provider/provider.dart';
+import '../provider/theme_color.dart';
+import '../screen/change_theme_screen.dart';
 import '../screen/product_screen.dart';
 import '../screen/sales_screen.dart';
 import '/screen/category_screen.dart';
@@ -20,13 +23,15 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
+    final theme = context.read<ThemeColorProvider>();
+
     return Drawer(
-      backgroundColor: Color.fromRGBO(45, 161, 95, 100),
+      backgroundColor: theme.primary,
       child: ListView(
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Color.fromRGBO(45, 161, 95, 100),
+            decoration: BoxDecoration(
+              color: theme.primary,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -166,6 +171,24 @@ class MyDrawer extends StatelessWidget {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: SettingsScreenn(),
+                      withNavBar: false, // OPTIONAL VALUE. True by default.
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
+                    // Navigator.of(context).pushReplacement(
+                    //   MaterialPageRoute(
+                    //     builder: (context) => SettingsScreenn(),
+                    //   ),
+                    // );
+                  },
+                ),
+                DrawerLink(
+                  icon: const Icon(Icons.settings),
+                  title: "Color Theme",
+                  onPress: () {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: ThemeScreen(),
                       withNavBar: false, // OPTIONAL VALUE. True by default.
                       pageTransitionAnimation:
                           PageTransitionAnimation.cupertino,

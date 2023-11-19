@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import 'package:point_of_sales/components/search_product_component.dart';
 import 'package:point_of_sales/helpers/invoicedb.dart';
 import 'package:point_of_sales/models/product_model.dart';
+import 'package:point_of_sales/provider/theme_color.dart';
+import 'package:point_of_sales/screen/pin_verification_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../color.dart';
 import '../components/change_user_modal_component.dart';
@@ -12,6 +17,7 @@ import '../components/most_latest_product_card_component.dart';
 import '../components/most_popular_product_card_component.dart';
 import '../helpers/invoicelinedb.dart';
 import '../helpers/productdb.dart';
+import 'package:restart_app/restart_app.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,6 +39,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   String name = "";
   void _loadData() async {
     final prefernces = await SharedPreferences.getInstance();
+    context.read<ThemeColorProvider>().changeColor(
+        Color(prefernces.getInt('color') ?? const Color(0xFF2DA15F).value));
     name = prefernces.getString('name') ?? "";
     final result = await InvoiceLineDBHelper.getPopularProduct();
     final listofInvoice = await InvoiceDBHelper.getList();
@@ -81,26 +89,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     bool showFab = MediaQuery.of(context).viewInsets.bottom == 0;
     double width = MediaQuery.of(context).size.width;
+    final theme = context.read<ThemeColorProvider>();
     return _isLoading
         ? Scaffold(
             backgroundColor: Colors.white,
-            body: Center(
-                child: CircularProgressIndicator(
-              color: Colors.green[700],
-            )),
+            body: Center(child: CircularProgressIndicator()),
           )
         : Scaffold(
             appBar: AppBar(
               elevation: 0,
               actions: [
                 IconButton(
-                  onPressed: () {
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (context) {
-                    //     return ChangeUser();
-                    //   },
-                    // );
+                  onPressed: () async {
+                    SystemNavigator.pop();
                   },
                   icon: const Icon(Icons.logout_outlined),
                 ),
@@ -133,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 Container(
                                   height: 215,
                                   decoration: BoxDecoration(
-                                    color: primary,
+                                    color: theme.primary,
                                     borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(20),
                                       bottomRight: Radius.circular(20),
@@ -300,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 alignment: Alignment.centerLeft,
                                 child: TabBar(
                                   isScrollable: true,
-                                  indicatorColor: Colors.green[700],
+
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15),
                                   labelStyle: const TextStyle(

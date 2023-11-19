@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../color.dart';
 import '../provider/order_screen_provider.dart';
+import '../provider/theme_color.dart';
 import 'customer_screen.dart';
 import 'home_screen.dart';
 import 'inventory_screen.dart';
@@ -21,7 +22,6 @@ class MainScren extends StatefulWidget {
 
 class _MainScrenState extends State<MainScren> {
   late PersistentTabController _controller;
-
   List<Widget> _buildScreens() {
     return [
       HomeScreen(),
@@ -41,17 +41,18 @@ class _MainScrenState extends State<MainScren> {
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
+    final theme = context.read<ThemeColorProvider>();
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home_outlined),
         title: ("Home"),
-        activeColorPrimary: primary,
+        activeColorPrimary: theme.primary,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.view_list_outlined),
         title: ("Products"),
-        activeColorPrimary: primary,
+        activeColorPrimary: theme.primary,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
@@ -59,19 +60,19 @@ class _MainScrenState extends State<MainScren> {
           Icons.shopping_cart_outlined,
         ),
         title: ("Order"),
-        activeColorPrimary: primary,
+        activeColorPrimary: theme.primary,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.inventory_2_outlined),
         title: ("Inventory"),
-        activeColorPrimary: primary,
+        activeColorPrimary: theme.primary,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.people_outline_outlined),
         title: ("Customer"),
-        activeColorPrimary: primary,
+        activeColorPrimary: theme.primary,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
     ];
