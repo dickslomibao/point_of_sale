@@ -132,7 +132,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             children: [
                               if (!isSearch)
                                 Container(
-                                  height: 215,
                                   decoration: BoxDecoration(
                                     color: theme.primary,
                                     borderRadius: const BorderRadius.only(
