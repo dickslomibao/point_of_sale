@@ -3,34 +3,30 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:point_of_sales/components/text_field_component.dart';
+import 'package:point_of_sales/helpers/categorydb.dart';
 import 'package:point_of_sales/helpers/productdb.dart';
 import 'package:point_of_sales/models/product_model.dart';
 
-import '../helpers/categorydb.dart';
+class AddProductScreen extends StatefulWidget {
+  AddProductScreen({Key? key, required this.add, required this.undo})
+      : super(key: key);
 
-class EditProductModal extends StatefulWidget {
-  EditProductModal({
-    Key? key,
-    required this.product,
-    required this.onUpdate,
-  }) : super(key: key);
-  Product product;
-  Function onUpdate;
-
+  Function add;
+  Function undo;
   @override
-  State<EditProductModal> createState() => _EditProductModalState();
+  State<AddProductScreen> createState() => _AddProductScreenState();
 }
 
-class _EditProductModalState extends State<EditProductModal> {
-  var catId = 0;
+class _AddProductScreenState extends State<AddProductScreen> {
   var barcodeController = TextEditingController();
   var nameController = TextEditingController();
   var categoryController = TextEditingController();
   var descController = TextEditingController();
+
   var qtyController = TextEditingController();
   var priceController = TextEditingController();
-  var sizeController = TextEditingController();
   var retailPrice = TextEditingController();
+  var catId = 0;
   Future<void> scanBarcodeNormal() async {
     String barcodeScanRes;
     try {
@@ -40,73 +36,52 @@ class _EditProductModalState extends State<EditProductModal> {
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
-    if (!mounted) return;
 
+    if (!mounted) return;
     if (barcodeScanRes != "-1") {
-      var checkProduct =
-          await ProductDBHelper.checkBarCode(code: barcodeScanRes);
-      setState(() {
-        if (checkProduct.isNotEmpty) {
-          showDialog(
-            context: context,
-            builder: (context) => const AlertDialog(
-              content: Text("Barcode is already assigned."),
-            ),
-          );
-        } else {
+      if (await validateCode(barcodeScanRes)) {
+        setState(() {
           barcodeController.text = barcodeScanRes;
-        }
-      });
+        });
+      }
     }
   }
 
-  @override
-  void initState() {
-    barcodeController.text = widget.product.barcode;
-    nameController.text = widget.product.name;
-    categoryController.text = widget.product.catId.toString();
-    descController.text = widget.product.description;
-    priceController.text = widget.product.price.toString();
+  Future<bool> validateCode(String code) async {
+    var checkProduct = await ProductDBHelper.checkBarCode(code: code);
+
+    if (checkProduct.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => const AlertDialog(
+          content: Text("Barcode is already assigned."),
+        ),
+      );
+      return false;
+    }
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-
-    if (catId == 0) {
-      catId = widget.product.catId;
-    }
-    return AlertDialog(
-      content: Container(
-        color: Colors.white,
-        width: width * .75,
-        padding: EdgeInsets.all(10),
-        child: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Add Product",
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Edit Product",
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                      color: Color.fromRGBO(0, 0, 0, .7),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Icon(Icons.close),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
               Text(
                 "Barcode: ",
                 style: GoogleFonts.poppins(
@@ -118,17 +93,24 @@ class _EditProductModalState extends State<EditProductModal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    width: (width * .75 - 40) * .75,
-                    child: TextField(
-                      enabled: false,
-                      controller: barcodeController,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 1,
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      child: TextField(
+                        onChanged: (value) async {
+                          if (!await validateCode(value)) {
+                            setState(() {
+                              barcodeController.text = "";
+                            });
+                          }
+                        },
+                        controller: barcodeController,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                            ),
                           ),
                         ),
                       ),
@@ -162,20 +144,11 @@ class _EditProductModalState extends State<EditProductModal> {
                 builder: (context,
                     AsyncSnapshot<List<Map<String, dynamic>>> category) {
                   if (category.hasData) {
-                    if (category.data!.isNotEmpty) {
-                      bool isIn = false;
-                      for (var element in category.data!) {
-                        if (element[CategoryDBHelper.colId] == catId) {
-                          isIn = true;
-                          break;
-                        }
-                      }
-                      if (!isIn) {
-                        catId = category.data!.first[CategoryDBHelper.colId];
-                      }
+                    if (catId == 0 && category.data!.isNotEmpty) {
+                      catId = category.data![0]['id'];
                     }
                     return Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black26),
                         borderRadius: BorderRadius.circular(5),
@@ -197,15 +170,14 @@ class _EditProductModalState extends State<EditProductModal> {
                                   );
                                 }).toList(),
                                 onChanged: (value) {
-                                  setState(() {
-                                    catId = int.parse(value.toString());
-                                  });
+                                  catId = int.parse(value.toString());
+                                  setState(() {});
                                 },
                               ),
                             ),
                     );
                   } else {
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 },
               ),
@@ -214,7 +186,17 @@ class _EditProductModalState extends State<EditProductModal> {
                 controller: descController,
               ),
               TextFieldComponents(
-                label: "Price",
+                label: "Quantity",
+                controller: qtyController,
+                keyboardType: TextInputType.number,
+              ),
+              TextFieldComponents(
+                label: "Retail Price",
+                controller: retailPrice,
+                keyboardType: TextInputType.number,
+              ),
+              TextFieldComponents(
+                label: "Selling Price",
                 controller: priceController,
                 keyboardType: TextInputType.number,
               ),
@@ -230,12 +212,14 @@ class _EditProductModalState extends State<EditProductModal> {
                       barcodeController,
                       nameController,
                       descController,
+                      qtyController,
                       priceController
                     ];
                     final List<String> error = [
                       'Barcode is required',
                       'Name is required',
                       'Description is required',
+                      'Quatity is required',
                       'Price is required',
                     ];
                     bool isOk = true;
@@ -251,56 +235,90 @@ class _EditProductModalState extends State<EditProductModal> {
                         break;
                       }
                     }
+
                     if (isOk) {
-                      if (double.tryParse(inputList[3].text.toString()) ==
+                      if (catId == 0) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                            content: Text("Category is required"),
+                          ),
+                        );
+                        return;
+                      }
+                      if (int.tryParse(inputList[3].text.toString()) == null) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                            content:
+                                Text("Invalid Quantity. Positive integer only"),
+                          ),
+                        );
+                        return;
+                      }
+                      if (int.parse(inputList[3].text.toString()) < 0) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                            content: Text("Quantity cannot be negative."),
+                          ),
+                        );
+                        return;
+                      }
+                      if (double.tryParse(inputList[4].text.toString()) ==
                           null) {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
+                          builder: (context) => const AlertDialog(
                             content: Text("Invalid Price. Check your input"),
                           ),
                         );
                         return;
                       }
-                      if (double.parse(inputList[3].text.toString()) <= 0) {
+                      if (double.parse(inputList[4].text.toString()) <= 0) {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
+                          builder: (context) => const AlertDialog(
                             content: Text("Price cannot be negative."),
                           ),
                         );
                         return;
                       }
-
                       var temp = Product(
-                        id: widget.product.id,
                         barcode: barcodeController.text,
                         name: nameController.text,
                         catId: catId,
                         description: descController.text,
+                        stock: int.parse(qtyController.text),
                         price: double.parse(priceController.text),
                         retailPrice: double.parse(retailPrice.text),
                       );
-                      ProductDBHelper.update(temp);
-                      widget.onUpdate();
+                      widget.add(temp);
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           behavior: SnackBarBehavior.floating,
                           backgroundColor: Colors.green[700],
                           content: Text(
-                            'Successfuly Edited',
+                            'Successfuly added',
                             style: GoogleFonts.poppins(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                             ),
+                          ),
+                          action: SnackBarAction(
+                            textColor: Colors.white,
+                            label: 'Undo',
+                            onPressed: () {
+                              widget.undo();
+                            },
                           ),
                         ),
                       );
                     }
                   },
                   child: Text(
-                    "Save",
+                    "Add item",
                     style: GoogleFonts.poppins(
                       fontSize: 17,
                       fontWeight: FontWeight.w500,

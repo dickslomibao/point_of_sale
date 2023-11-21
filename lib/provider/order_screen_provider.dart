@@ -21,11 +21,25 @@ class OrderScreenProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void minus(int pId) {
+    for (var order in orderList) {
+      if (order.productId == pId) {
+        order.qty -= 1;
+        if (order.qty == 0) {
+          orderList.removeWhere((element) => element.productId == pId);
+        }
+        notifyListeners();
+        break;
+      }
+    }
+  }
+
   void addORder(
-      BuildContext context,
-      String barcodeScanRes,
-      TextEditingController qtyController,
-      TextEditingController barcodeController) {
+    BuildContext context,
+    String barcodeScanRes,
+    TextEditingController qtyController,
+    TextEditingController barcodeController,
+  ) {
     bool barcodeIsValid = false;
     Product? product;
     for (var temp in productList) {
@@ -57,49 +71,58 @@ class OrderScreenProvider extends ChangeNotifier {
         }
       }
       if (productIsNotIn) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return MyAlertQtyModal(
-              tempProduct: product!,
-              controller: qtyController,
-              add: () {
-                if (qtyController.text == "") {
-                  showAlert(context: context, message: "Quantity is required.");
-                  return;
-                }
-                if (int.tryParse(qtyController.text) == null) {
-                  showAlert(context: context, message: "Invalid Quantity.");
-                  return;
-                }
-                if (int.parse(qtyController.text) <= 0) {
-                  showAlert(
-                      context: context,
-                      message: "Can't Add Zero or Negative value.");
-                  return;
-                }
-                int qty = int.parse(qtyController.text);
-                if (qty > product!.stock) {
-                  showAlert(
-                      context: context,
-                      message: "The items have only ${product.stock} stock");
-                  return;
-                }
-
-                orderList.add(
-                  InvoiceLine(
-                    retailPirce: product.retailPrice,
-                    productId: product.id,
-                    productPrice: product.price,
-                    qty: qty,
-                  ),
-                );
-                notifyListeners();
-                Navigator.of(context).pop();
-              },
-            );
-          },
+        orderList.add(
+          InvoiceLine(
+            retailPirce: product.retailPrice,
+            productId: product.id,
+            productPrice: product.price,
+            qty: 1,
+          ),
         );
+        notifyListeners();
+        // showDialog(
+        //   context: context,
+        //   builder: (context) {
+        //     return MyAlertQtyModal(
+        //       tempProduct: product!,
+        //       controller: qtyController,
+        //       add: () {
+        //         if (qtyController.text == "") {
+        //           showAlert(context: context, message: "Quantity is required.");
+        //           return;
+        //         }
+        //         if (int.tryParse(qtyController.text) == null) {
+        //           showAlert(context: context, message: "Invalid Quantity.");
+        //           return;
+        //         }
+        //         if (int.parse(qtyController.text) <= 0) {
+        //           showAlert(
+        //               context: context,
+        //               message: "Can't Add Zero or Negative value.");
+        //           return;
+        //         }
+        //         int qty = int.parse(qtyController.text);
+        //         if (qty > product!.stock) {
+        //           showAlert(
+        //               context: context,
+        //               message: "The items have only ${product.stock} stock");
+        //           return;
+        //         }
+
+        //         orderList.add(
+        //           InvoiceLine(
+        //             retailPirce: product.retailPrice,
+        //             productId: product.id,
+        //             productPrice: product.price,
+        //             qty: qty,
+        //           ),
+        //         );
+        //         notifyListeners();
+        //         Navigator.of(context).pop();
+        //       },
+        //     );
+        //   },
+        // );
       }
     } else {
       showAlert(context: context, message: 'Item not found');

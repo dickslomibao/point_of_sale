@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../components/add_payment_modal.dart';
 import '../models/customer_model.dart';
+import '../provider/theme_color.dart';
 import 'order_screen.dart';
 
 class CustomerViewScren extends StatefulWidget {
@@ -30,6 +31,8 @@ class _CustomerViewScrenState extends State<CustomerViewScren> {
   @override
   Widget build(BuildContext context) {
     final watch = context.watch<CustomerViewScreenProvider>();
+    final theme = context.read<ThemeColorProvider>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -119,8 +122,8 @@ class _CustomerViewScrenState extends State<CustomerViewScren> {
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                ),
+                                    elevation: 0,
+                                    backgroundColor: theme.primary),
                                 child: const Text(
                                   "Make a payment",
                                   style: TextStyle(
@@ -139,6 +142,10 @@ class _CustomerViewScrenState extends State<CustomerViewScren> {
                           child: Container(
                             height: 48,
                             child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor: theme.primary,
+                              ),
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
@@ -176,11 +183,12 @@ class _CustomerViewScrenState extends State<CustomerViewScren> {
                       const Spacer(),
                       TextButton(
                         onPressed: () {},
-                        child: const Text(
+                        child: Text(
                           "Sort by:",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
+                            color: theme.primary,
                           ),
                         ),
                       ),
@@ -233,7 +241,7 @@ class _CustomerViewScrenState extends State<CustomerViewScren> {
                                       style: TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.green[800],
+                                        color: theme.primary,
                                       ),
                                     ),
                                   ),

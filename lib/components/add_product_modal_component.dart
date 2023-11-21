@@ -6,6 +6,9 @@ import 'package:point_of_sales/components/text_field_component.dart';
 import 'package:point_of_sales/helpers/categorydb.dart';
 import 'package:point_of_sales/helpers/productdb.dart';
 import 'package:point_of_sales/models/product_model.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/theme_color.dart';
 
 class AddProductModel extends StatefulWidget {
   AddProductModel({Key? key, required this.add, required this.undo})
@@ -22,7 +25,7 @@ class _AddProductModelState extends State<AddProductModel> {
   var nameController = TextEditingController();
   var categoryController = TextEditingController();
   var descController = TextEditingController();
-  var sizeController = TextEditingController();
+
   var qtyController = TextEditingController();
   var priceController = TextEditingController();
   var retailPrice = TextEditingController();
@@ -65,6 +68,8 @@ class _AddProductModelState extends State<AddProductModel> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    final theme = context.read<ThemeColorProvider>();
+
     return AlertDialog(
       content: Container(
         color: Colors.white,
@@ -107,23 +112,24 @@ class _AddProductModelState extends State<AddProductModel> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    width: (width * .75 - 40) * .75,
-                    child: TextField(
-                      onChanged: (value) async {
-                        if (!await validateCode(value)) {
-                          setState(() {
-                            barcodeController.text = "";
-                          });
-                        }
-                      },
-                      controller: barcodeController,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 1,
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      child: TextField(
+                        onChanged: (value) async {
+                          if (!await validateCode(value)) {
+                            setState(() {
+                              barcodeController.text = "";
+                            });
+                          }
+                        },
+                        controller: barcodeController,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                            ),
                           ),
                         ),
                       ),
@@ -199,10 +205,6 @@ class _AddProductModelState extends State<AddProductModel> {
                 controller: descController,
               ),
               TextFieldComponents(
-                label: "Size/Unit of Measurement",
-                controller: sizeController,
-              ),
-              TextFieldComponents(
                 label: "Quantity",
                 controller: qtyController,
                 keyboardType: TextInputType.number,
@@ -222,8 +224,8 @@ class _AddProductModelState extends State<AddProductModel> {
                 margin: const EdgeInsets.only(top: 20),
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green[700]),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: theme.primary),
                   onPressed: () {
                     List<TextEditingController> inputList = [
                       barcodeController,
@@ -308,31 +310,30 @@ class _AddProductModelState extends State<AddProductModel> {
                         description: descController.text,
                         stock: int.parse(qtyController.text),
                         price: double.parse(priceController.text),
-                        measurement: sizeController.text,
                         retailPrice: double.parse(retailPrice.text),
                       );
                       widget.add(temp);
                       Navigator.of(context).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: Colors.green[700],
-                          content: Text(
-                            'Successfuly added',
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          action: SnackBarAction(
-                            textColor: Colors.white,
-                            label: 'Undo',
-                            onPressed: () {
-                              widget.undo();
-                            },
-                          ),
-                        ),
-                      );
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(
+                      //     behavior: SnackBarBehavior.floating,
+                      //     backgroundColor: Colors.green[700],
+                      //     content: Text(
+                      //       'Successfuly added',
+                      //       style: GoogleFonts.poppins(
+                      //         fontSize: 15,
+                      //         fontWeight: FontWeight.w500,
+                      //       ),
+                      //     ),
+                      //     action: SnackBarAction(
+                      //       textColor: Colors.white,
+                      //       label: 'Undo',
+                      //       onPressed: () {
+                      //         widget.undo();
+                      //       },
+                      //     ),
+                      //   ),
+                      // );
                     }
                   },
                   child: Text(

@@ -85,7 +85,7 @@ class ProductCard extends StatelessWidget {
             onTap();
           },
           title: Text(
-            "${product.name} (${product.measurement})",
+            "${product.name}",
             style: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w500,

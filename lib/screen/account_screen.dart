@@ -39,12 +39,13 @@ class _AccountScreenState extends State<AccountScreen> {
     _getStaffList();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Staff",
-          style: GoogleFonts.lato(
+          style: TextStyle(
             fontSize: 18,
             color: Colors.white,
             fontWeight: FontWeight.w500,
@@ -87,12 +88,6 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ),
         ],
-        toolbarHeight: 60,
-        elevation: 0,
-        iconTheme: const IconThemeData(
-          size: 30,
-          color: Colors.white,
-        ),
       ),
       body: _isLoading
           ? Center(

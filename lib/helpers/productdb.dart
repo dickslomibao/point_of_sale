@@ -16,7 +16,7 @@ class ProductDBHelper {
   static const String colStock = 'stock';
   static const String colPrice = 'price';
   //new
-  static const String colMeasurement = 'measurement';
+
   static const String colReatailPrice = 'retail_price';
   static Future<Database> openDb() async {
     final dbpath = await getDatabasesPath();
@@ -34,7 +34,7 @@ class ProductDBHelper {
             $colDescription TEXT NOT NULL,
             $colStock INTEGER,
             $colPrice DECIMAL,
-            $colMeasurement TEXT NOT NULL,
+  
             $colReatailPrice DECIMAL
           )
       ''',
@@ -44,8 +44,7 @@ class ProductDBHelper {
 
   static void minus({required int id, required int qty}) async {
     final db = await openDb();
-    await db.execute(
-        '''
+    await db.execute('''
         UPDATE $tblName set $colStock = (
           SELECT $colStock FROM $tblName where $colId = $id
         ) - $qty WHERE $colId = $id;
@@ -78,7 +77,30 @@ class ProductDBHelper {
           description: element[colDescription],
           stock: int.parse(element[colStock].toString()),
           price: double.parse(element[colPrice].toString()),
-          measurement: element[colMeasurement].toString(),
+          retailPrice: double.parse(element[colReatailPrice].toString()),
+        ),
+      );
+    });
+
+    return product;
+  }
+
+  static Future<List<Product>> getLowStockProduct() async {
+    final db = await openDb();
+    List<Product> product = [];
+    List<Map<String, dynamic>> data = await db.query(tblName,
+        where: '$colStock <= 5', orderBy: '$colStock DESC');
+
+    data.forEach((element) {
+      product.add(
+        Product(
+          id: element[colId],
+          barcode: element[colBarcode],
+          name: element[colTitle],
+          catId: int.parse(element[colCatId].toString()),
+          description: element[colDescription],
+          stock: int.parse(element[colStock].toString()),
+          price: double.parse(element[colPrice].toString()),
           retailPrice: double.parse(element[colReatailPrice].toString()),
         ),
       );
@@ -145,7 +167,6 @@ class ProductDBHelper {
             description: data.first[colDescription],
             stock: int.parse(data.first[colStock].toString()),
             price: double.parse(data.first[colPrice].toString()),
-            measurement: data.first[colMeasurement].toString(),
             retailPrice: double.parse(data.first[colReatailPrice].toString()),
           );
   }

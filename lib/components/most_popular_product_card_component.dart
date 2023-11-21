@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../models/product_model.dart';
+import '../provider/theme_color.dart';
 
 class PopularProductCard extends StatelessWidget {
   PopularProductCard(
@@ -17,6 +19,8 @@ class PopularProductCard extends StatelessWidget {
   int totalsold;
   @override
   Widget build(BuildContext context) {
+    final theme = context.read<ThemeColorProvider>();
+
     return Card(
       child: Container(
         padding: const EdgeInsets.all(15.0),
@@ -27,13 +31,16 @@ class PopularProductCard extends StatelessWidget {
             Text(
               "Name: ${product.name}",
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 18,
                 fontWeight: FontWeight.w500,
-                color: Colors.green[700],
+                color: theme.primary,
               ),
             ),
+            SizedBox(
+              height: 2,
+            ),
             Text(
-              "Price: ${product.name == "<Product Not Found>" ? '<Price not found>' : product.price}",
+              "Price: ${product.name == "<Product Not Found>" ? '<Price not found>' : product.price.toStringAsFixed(2)}",
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -41,6 +48,16 @@ class PopularProductCard extends StatelessWidget {
             ),
             SizedBox(
               height: 5,
+            ),
+            Text(
+              "Total Sales: ${product.name == "<Product Not Found>" ? '<Price not found>' : totalsales.toStringAsFixed(2)}",
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(
+              height: 2,
             ),
             Text(
               "Total sold: $totalsold",

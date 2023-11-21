@@ -35,9 +35,9 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text("Ok"))
+                child: const Text("Ok"))
           ],
-          title: Text("Oops.."),
+          title: const Text("Oops.."),
           content: Text(msg),
         );
       },
@@ -47,7 +47,7 @@ class _SettingsScreennState extends State<SettingsScreenn> {
   void setGEtKey() async {
     _prefs = await SharedPreferences.getInstance();
     if (!_prefs!.containsKey("appid")) {
-      await _prefs!.setString("appid", Uuid().v4());
+      await _prefs!.setString("appid", const Uuid().v4());
       id = _prefs!.getString("appid");
     }
     id = _prefs!.getString("appid");
@@ -77,7 +77,7 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                 },
               );
             },
-            icon: Icon(Icons.info_outline),
+            icon: const Icon(Icons.info_outline),
           )
         ],
         backgroundColor: Colors.green[700],
@@ -104,7 +104,7 @@ class _SettingsScreennState extends State<SettingsScreenn> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   backgroundColor: Colors.green[700],
                 ),
                 onPressed: () async {
@@ -150,24 +150,26 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                             .set(element);
                       });
 
-                      showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            actions: [
-                              OutlinedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Ok"))
-                            ],
-                            title: Text("Success"),
-                            content: Text(
-                                "Your data is now exported on cloud firestore"),
-                          );
-                        },
-                      );
+                      if (context.mounted) {
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              actions: [
+                                OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Ok"))
+                              ],
+                              title: const Text("Success"),
+                              content: const Text(
+                                  "Your data is now exported on cloud firestore"),
+                            );
+                          },
+                        );
+                      }
                     }
                   } on SocketException catch (err) {
                     alertInternet("Please check your internet Connection");
@@ -196,7 +198,7 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text('Cancel')),
+                                child: const Text('Cancel')),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green[700],
@@ -255,27 +257,29 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                                             .firestoreInsert(element.data());
                                       });
 
-                                      showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            actions: [
-                                              OutlinedButton(
-                                                  onPressed: () {
-                                                    Navigator
-                                                        .pushNamedAndRemoveUntil(
-                                                            context,
-                                                            '/home',
-                                                            (route) => false);
-                                                  },
-                                                  child: Text("Ok"))
-                                            ],
-                                            content:
-                                                Text("Data succesfully fetch."),
-                                          );
-                                        },
-                                      );
+                                      if (context.mounted) {
+                                        showDialog(
+                                          barrierDismissible: false,
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              actions: [
+                                                OutlinedButton(
+                                                    onPressed: () {
+                                                      Navigator
+                                                          .pushNamedAndRemoveUntil(
+                                                              context,
+                                                              '/home',
+                                                              (route) => false);
+                                                    },
+                                                    child: const Text("Ok"))
+                                              ],
+                                              content: const Text(
+                                                  "Data succesfully fetch."),
+                                            );
+                                          },
+                                        );
+                                      }
                                     }
                                   }
                                 } on SocketException catch (err) {
@@ -283,12 +287,12 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                                       "Please check your internet Connection");
                                 }
                               },
-                              child: Text("Fetch data"),
+                              child: const Text("Fetch data"),
                             ),
                           ],
                           content: TextField(
                             controller: key,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               label: Text('Your key'),
                             ),
@@ -303,14 +307,14 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                         fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     backgroundColor: Colors.green[700],
                   ),
                 ),
               )),
         ],
       ),
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
     );
   }
 }

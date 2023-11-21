@@ -21,8 +21,8 @@ import '../helpers/customerdb.dart';
 import '../models/customer_model.dart';
 
 class CustomerScreen extends StatefulWidget {
-  CustomerScreen({super.key});
-
+  const CustomerScreen({super.key, this.f});
+  final Function? f;
   @override
   State<CustomerScreen> createState() => _CustomerScreenState();
 }
@@ -122,6 +122,10 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         customer: c,
                         onDismissed: () {},
                         onTap: () {
+                          if (widget.f != null) {
+                            widget.f!(c);
+                            return;
+                          }
                           PersistentNavBarNavigator.pushNewScreen(
                             context,
                             screen: CustomerViewScren(customer: c),

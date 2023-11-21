@@ -4,6 +4,7 @@ import 'package:point_of_sales/helpers/invoicedb.dart';
 import 'package:point_of_sales/helpers/invoicelinedb.dart';
 import 'package:point_of_sales/helpers/productdb.dart';
 import 'package:point_of_sales/models/invoice_model.dart';
+import 'package:point_of_sales/screen/customer_screen.dart';
 import 'package:point_of_sales/screen/transaction_success_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ import '../components/checkout_user_money_modal.dart';
 import '../components/success_transaction_mode.dart';
 import '../models/customer_model.dart';
 import '../provider/customer_view_screen_provider.dart';
+import '../provider/theme_color.dart';
 
 class CheckOutScreen extends StatelessWidget {
   CheckOutScreen(
@@ -45,6 +47,7 @@ class CheckOutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    final theme = context.read<ThemeColorProvider>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -91,6 +94,9 @@ class CheckOutScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     ListView.builder(
                       itemCount: order.length,
                       shrinkWrap: true,
@@ -100,33 +106,72 @@ class CheckOutScreen extends StatelessWidget {
                         double subtotal =
                             order[index].productPrice * order[index].qty;
                         return Container(
-                          margin: EdgeInsets.only(bottom: 10),
-                          child: ListTile(
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 0.0),
-                            title: Text(
-                              product.name,
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500,
+                          // color: Colors.amber,
+
+                          margin: const EdgeInsets.only(bottom: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      product.name,
+                                      style: const TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Text(
+                                      "Price: ${order[index].productPrice.toStringAsFixed(2)} ",
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            subtitle: Text(
-                              "Price: ${order[index].productPrice.toStringAsFixed(2)} ",
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
+                              SizedBox(
+                                width: 10,
                               ),
-                            ),
-                            trailing: Text(
-                              " x ${order[index].qty} = ${subtotal.toStringAsFixed(2)}",
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
+                              Text(
+                                " * ${order[index].qty} = ${subtotal.toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
+                            ],
                           ),
+                          // child: ListTile(
+                          //   contentPadding: const EdgeInsets.symmetric(
+                          //       horizontal: 0.0, vertical: 0),
+                          //   title: Text(
+                          //     product.name,
+                          //     style: const TextStyle(
+                          //       fontSize: 17,
+                          //       fontWeight: FontWeight.w500,
+                          //     ),
+                          //     overflow: TextOverflow.ellipsis,
+                          //   ),
+                          //   subtitle: Text(
+                          //     "Price: ${order[index].productPrice.toStringAsFixed(2)} ",
+                          //     style: const TextStyle(
+                          //       fontSize: 15,
+                          //       fontWeight: FontWeight.w500,
+                          //     ),
+                          //   ),
+                          //   trailing: Text(
+                          //     " * ${order[index].qty} = ${subtotal.toStringAsFixed(2)}",
+                          //     style: const TextStyle(
+                          //       fontSize: 15,
+                          //       fontWeight: FontWeight.w500,
+                          //     ),
+                          //   ),
+                          // ),
                         );
                       },
                     ),
@@ -144,17 +189,17 @@ class CheckOutScreen extends StatelessWidget {
                               Text(
                                 "Total Price: ",
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.green[800],
-                                  fontWeight: FontWeight.w500,
+                                  fontSize: 19,
+                                  color: theme.primary,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                               Text(
                                 "Php ${totalPrice().toStringAsFixed(2)}",
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.green[800],
-                                  fontWeight: FontWeight.w500,
+                                  fontSize: 19,
+                                  color: theme.primary,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
@@ -170,13 +215,19 @@ class CheckOutScreen extends StatelessWidget {
               ),
               TextField(
                 controller: amountController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: theme.primary,
+                    ),
+                  ),
                   contentPadding: EdgeInsets.all(18),
                   border: OutlineInputBorder(),
                   labelText: "Cash Tendered",
                   labelStyle: TextStyle(
-                    fontSize: 17,
+                    fontSize: 18,
                     fontWeight: FontWeight.w500,
+                    color: theme.primary,
                   ),
                 ),
               ),
@@ -186,7 +237,11 @@ class CheckOutScreen extends StatelessWidget {
               Container(
                 height: 52,
                 width: double.infinity,
+                color: theme.primary,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.primary,
+                  ),
                   onPressed: () async {
                     final pref = await SharedPreferences.getInstance();
                     if (context.mounted) {
@@ -271,13 +326,13 @@ class CheckOutScreen extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              if (customer != null)
-                Container(
-                  height: 52,
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      final pref = await SharedPreferences.getInstance();
+              Container(
+                height: 52,
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () async {
+                    final pref = await SharedPreferences.getInstance();
+                    if (customer != null) {
                       if (context.mounted) {
                         final uuid = const Uuid().v4();
                         InvoiceDBHelper.insert(
@@ -311,16 +366,59 @@ class CheckOutScreen extends StatelessWidget {
                           ),
                         );
                       }
-                    },
-                    child: const Text(
-                      "Check out as Credit",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    } else {
+                      if (context.mounted) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => CustomerScreen(
+                              f: (CustomerModel c) {
+                                if (context.mounted) {
+                                  final uuid = const Uuid().v4();
+                                  InvoiceDBHelper.insert(
+                                    Invoice(
+                                      id: uuid,
+                                      custumerPayAmount: 0,
+                                      totalAmount: totalPrice(),
+                                      processBy: pref.getString('id') ?? "",
+                                      customerId: c.id.toString(),
+                                      tenderedAmount: 0,
+                                    ),
+                                  );
+                                  for (var temp in order) {
+                                    temp.invoiceId = uuid;
+                                    InvoiceLineDBHelper.insert(temp);
+                                    ProductDBHelper.minus(
+                                        id: temp.productId, qty: temp.qty);
+                                  }
+                                  PersistentNavBarNavigator.pushNewScreen(
+                                    context,
+                                    withNavBar: false,
+                                    screen: TransactionSuccessScreen(
+                                      change: 0,
+                                      customer: customer,
+                                      orderId: uuid,
+                                      cashTendered: 0,
+                                      totalPrice: totalPrice(),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: Text(
+                    "Check out as Credit",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: theme.primary,
                     ),
                   ),
                 ),
+              ),
             ],
           ),
         ),

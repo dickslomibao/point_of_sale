@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:point_of_sales/components/low_stock_component.dart';
 
 import 'package:point_of_sales/components/search_product_component.dart';
 import 'package:point_of_sales/helpers/invoicedb.dart';
@@ -29,6 +30,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late TabController _controller;
   List<Product> _productlist = [];
+  List<Product> lowStockProduct = [];
   List<Map<String, dynamic>> _popular = [];
   List<Product> _searchList = [];
   bool isSearch = false;
@@ -46,13 +48,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final listofInvoice = await InvoiceDBHelper.getList();
     final listofInvoiceLine = await InvoiceLineDBHelper.getList();
     final data = await ProductDBHelper.getList();
+    lowStockProduct = await ProductDBHelper.getLowStockProduct();
+
     setState(() {
       _productlist = data;
       _popular = result;
       listofInvoice.forEach((element) {
         final date = DateTime.now();
         final productDate = DateTime.parse(element.date);
-
         int yearToday = date.year;
         int monthToday = date.month;
         int productYear = productDate.year;
@@ -87,11 +90,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    bool showFab = MediaQuery.of(context).viewInsets.bottom == 0;
     double width = MediaQuery.of(context).size.width;
     final theme = context.read<ThemeColorProvider>();
     return _isLoading
-        ? Scaffold(
+        ? const Scaffold(
             backgroundColor: Colors.white,
             body: Center(child: CircularProgressIndicator()),
           )
@@ -149,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                           children: [
                                             Text(
                                               "Hi, $name",
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 21,
                                                 fontWeight: FontWeight.w500,
                                                 color: Colors.white,
@@ -296,25 +298,70 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               const SizedBox(
                                 height: 15,
                               ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: TabBar(
-                                  isScrollable: true,
-
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  labelStyle: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: TabBar(
+                                        isScrollable: true,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15),
+                                        labelStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        labelColor: Colors.black,
+                                        controller: _controller,
+                                        tabs: const [
+                                          Tab(text: 'Popular'),
+                                          Tab(text: 'Latest'),
+                                          Tab(text: 'Low stock'),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  labelColor: Colors.black,
-                                  controller: _controller, // length of tabs
-                                  tabs: const [
-                                    Tab(text: 'Popular'),
-                                    Tab(text: 'Latest'),
-                                    Tab(text: 'Low stock'),
-                                  ],
-                                ),
+                                  IconButton(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) =>
+                                            SingleChildScrollView(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: const [
+                                                Text(
+                                                  "Did you know ?",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "The popular section and latest product display a maximum of 10 products. While the low-stock section displays all products that have less than 6 stocks.",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.info_outline),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
                                 height: 10,
@@ -355,7 +402,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                         catId: 0,
                                                         description: "",
                                                         price: 0,
-                                                        measurement: "",
                                                         retailPrice: 0);
                                                   },
                                                 );
@@ -387,8 +433,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                             padding: const EdgeInsets.all(8.0),
                                             child: ListView.builder(
                                               itemCount:
-                                                  _productlist.length >= 3
-                                                      ? 3
+                                                  _productlist.length >= 10
+                                                      ? 10
                                                       : _productlist.length,
                                               itemBuilder: (context, index) {
                                                 return LatestProductCard(
@@ -397,7 +443,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                               },
                                             ),
                                           ),
-                                    const SizedBox(),
+                                    lowStockProduct.isEmpty
+                                        ? const Center(
+                                            child: Text(
+                                              "Data is empty",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 18,
+                                                color:
+                                                    Color.fromRGBO(0, 0, 0, .7),
+                                              ),
+                                            ),
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: lowStockProduct.length,
+                                              itemBuilder: (context, index) {
+                                                var p = lowStockProduct[index];
+                                                return LowStockProductCard(
+                                                  product: p,
+                                                );
+                                              },
+                                            ),
+                                          ),
                                   ],
                                 ),
                               ),

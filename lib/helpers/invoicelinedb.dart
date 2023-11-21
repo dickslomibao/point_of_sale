@@ -118,6 +118,6 @@ class InvoiceLineDBHelper {
   static Future<List<Map<String, dynamic>>> getPopularProduct() async {
     final db = await openDb();
     return await db.rawQuery(
-        "SELECT $colProductId, sum($colQty) as total, sum($colPrice * $colQty) as totalSales from $tblName GROUP BY $colProductId ORDER BY total desc limit 3");
+        "SELECT $colProductId, sum($colQty) as total, sum($colPrice * $colQty) as totalSales from $tblName GROUP BY $colProductId ORDER BY total desc limit 10");
   }
 }

@@ -40,8 +40,13 @@ void main() async {
           print('asd123');
           return MaterialApp(
             debugShowCheckedModeBanner: false,
+            color: value.myColor,
             theme: ThemeData(
+              primaryColor: value.myColor,
               primarySwatch: value.myColor,
+              buttonTheme: ButtonThemeData(
+                buttonColor: value.myColor,
+              ),
               appBarTheme: AppBarTheme(
                 backgroundColor: value.primary,
               ),

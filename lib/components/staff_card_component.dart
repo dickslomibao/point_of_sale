@@ -51,7 +51,7 @@ class StaffCard extends StatelessWidget {
           //             },
           //             child: Text(
           //               'Cancel',
-          //               style: GoogleFonts.poppins(
+          //               style: TextStyle(
           //                 fontSize: 15,
           //                 fontWeight: FontWeight.w500,
           //                 color: Colors.red,
@@ -67,7 +67,7 @@ class StaffCard extends StatelessWidget {
           //             },
           //             child: Text(
           //               "Ok",
-          //               style: GoogleFonts.poppins(
+          //               style: TextStyle(
           //                 fontSize: 15,
           //                 fontWeight: FontWeight.w500,
           //               ),
@@ -82,23 +82,19 @@ class StaffCard extends StatelessWidget {
           // onDismissed();
         },
         child: ListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0), // Rounded corners
-          ),
-          tileColor: Color.fromRGBO(213, 236, 223, 100),
           onTap: () {
             onTap();
           },
           title: Text(
             account.name,
-            style: GoogleFonts.poppins(
-              fontSize: 17,
-              fontWeight: FontWeight.w400,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
             ),
           ),
           subtitle: Text(
             "Birthdate: ${account.birthdate}",
-            style: GoogleFonts.poppins(
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
               color: Color.fromRGBO(0, 0, 0, .7),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
 import '../models/product_model.dart';
 import '../provider/theme_color.dart';
 
-class LatestProductCard extends StatelessWidget {
-  const LatestProductCard({
+class LowStockProductCard extends StatelessWidget {
+  LowStockProductCard({
     Key? key,
     required this.product,
   }) : super(key: key);
@@ -17,7 +18,6 @@ class LatestProductCard extends StatelessWidget {
     final theme = context.read<ThemeColorProvider>();
 
     return Card(
-      elevation: 1,
       child: Container(
         padding: const EdgeInsets.all(15.0),
         width: double.infinity,
@@ -27,24 +27,27 @@ class LatestProductCard extends StatelessWidget {
             Text(
               "Name: ${product.name}",
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 18,
                 fontWeight: FontWeight.w500,
                 color: theme.primary,
+              ),
+            ),
+            SizedBox(
+              height: 2,
+            ),
+            Text(
+              "Price: ${product.name == "<Product Not Found>" ? '<Price not found>' : product.price.toStringAsFixed(2)}",
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
               ),
             ),
             SizedBox(
               height: 5,
             ),
             Text(
-              "Stock: ${product.stock}",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Text(
-              "Price: ${product.price}",
-              style: TextStyle(
+              "Stocks: ${product.stock}",
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),

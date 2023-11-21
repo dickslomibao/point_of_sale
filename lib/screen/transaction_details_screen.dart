@@ -63,7 +63,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Transaction Details",
           style: TextStyle(
             fontSize: 23,
@@ -98,46 +98,61 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                                 color: Colors.green[800],
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            if ((widget.invoice.totalAmount -
+                                    widget.invoice.custumerPayAmount) !=
+                                0)
+                              Text(
+                                "Balance: Php ${(widget.invoice.totalAmount - widget.invoice.custumerPayAmount).toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            const SizedBox(
                               height: 10,
                             ),
                             Text(
                               "Total Product: ${_invoiceLine.length}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             Text(
                               "Total Items: ${_totalItem()}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             if (customer != null)
                               Text(
                                 "Customer: ${customer!.name}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             Text(
                               "Cash Tendered: Php ${widget.invoice.tenderedAmount.toStringAsFixed(2)}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
+                                fontWeight: FontWeight.w500,
                               ),
-                            ),
-                            SizedBox(
-                              height: 1,
                             ),
                             Text(
                               "Process By: ${account!.name}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
+                                fontWeight: FontWeight.w500,
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -166,7 +181,6 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                             catId: 0,
                             description: "",
                             price: 0.00,
-                            measurement: "",
                             retailPrice: 0,
                           ),
                         );
@@ -174,10 +188,10 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                           child: ListTile(
                             subtitle: Text(
                               "Total Price: ${_invoiceLine[index].subTotal()}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
-                                color: const Color.fromRGBO(0, 0, 0, .7),
+                                color: Color.fromRGBO(0, 0, 0, .7),
                               ),
                             ),
                             title: Text(
@@ -192,7 +206,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                             ),
                             trailing: Text(
                               "Qty: ${_invoiceLine[index].qty}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: Color.fromRGBO(0, 0, 0, .7),
@@ -206,7 +220,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                 ],
               ),
             ),
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
     );
   }
 }

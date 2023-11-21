@@ -167,7 +167,7 @@ class PrintRecieptProvider extends ChangeNotifier {
         list.add(
           LineText(
             type: LineText.TYPE_TEXT,
-            content: '${p.name} (${p.measurement})',
+            content: '${p.name}',
             weight: 0,
             align: LineText.ALIGN_LEFT,
             linefeed: 1,

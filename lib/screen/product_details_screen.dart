@@ -4,11 +4,13 @@ import 'package:point_of_sales/helpers/categorydb.dart';
 import 'package:point_of_sales/helpers/invoicelinedb.dart';
 import 'package:point_of_sales/models/invoice_line_model.dart';
 import 'package:point_of_sales/models/product_model.dart';
+import 'package:provider/provider.dart';
 
 import '../color.dart';
 import '../components/bottom_navbar_component.dart';
 import '../components/drawer_component.dart';
 import '../components/floating_action_order_component.dart';
+import '../provider/theme_color.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   ProductDetailsScreen({super.key, required this.product});
@@ -50,6 +52,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return total;
   }
 
+  double totalProfit() {
+    double total = 0;
+    _productOrderList.forEach((element) {
+      total += element.productPrice - element.retailPirce;
+    });
+    return total;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +69,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
+    final theme = context.read<ThemeColorProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -92,7 +103,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 style: TextStyle(
                                   fontSize: 19,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.green[700],
+                                  color: theme.primary,
                                 ),
                               ),
                               const SizedBox(
@@ -102,6 +113,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 "Descriptions: ${widget.product.description}",
                                 style: const TextStyle(
                                   fontSize: 18,
+                                  fontWeight: FontWeight.w500,
                                   height: 1.4,
                                 ),
                               ),
@@ -109,6 +121,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 "Barcode: ${widget.product.barcode}",
                                 style: const TextStyle(
                                   fontSize: 18,
+                                  fontWeight: FontWeight.w500,
                                   height: 1.4,
                                 ),
                               ),
@@ -116,20 +129,23 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 "Category: ${_category.isEmpty ? '<not found>' : _category.last[CategoryDBHelper.colTitle]}",
                                 style: const TextStyle(
                                   fontSize: 18,
+                                  fontWeight: FontWeight.w500,
                                   height: 1.4,
                                 ),
                               ),
                               Text(
-                                "Retail price: ${widget.product.retailPrice}",
+                                "Retail price: ${widget.product.retailPrice.toStringAsFixed(2)}",
                                 style: const TextStyle(
                                   fontSize: 18,
+                                  fontWeight: FontWeight.w500,
                                   height: 1.4,
                                 ),
                               ),
                               Text(
-                                "Price: ${widget.product.price}",
+                                "Price: ${widget.product.price.toStringAsFixed(2)}",
                                 style: const TextStyle(
                                   fontSize: 18,
+                                  fontWeight: FontWeight.w500,
                                   height: 1.4,
                                 ),
                               ),
@@ -137,6 +153,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 "Stock: ${widget.product.stock}",
                                 style: TextStyle(
                                   fontSize: 18,
+                                  fontWeight: FontWeight.w500,
                                   height: 1.4,
                                   color: widget.product.stock < 6
                                       ? Colors.red
@@ -162,7 +179,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     Container(
                       width: double.infinity,
                       child: Card(
-                        color: primary,
+                        color: theme.primary,
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: Column(
@@ -173,14 +190,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 style: const TextStyle(
                                   fontSize: 18,
                                   height: 1.4,
+                                  fontWeight: FontWeight.w500,
                                   color: Colors.white,
                                 ),
                               ),
                               Text(
-                                "Total Sales: ${_totalSales()}",
+                                "Total Sales: ${_totalSales().toStringAsFixed(2)}",
                                 style: const TextStyle(
                                   fontSize: 18,
                                   height: 1.4,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                "Total Profit: ${totalProfit().toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w500,
                                   color: Colors.white,
                                 ),
                               ),

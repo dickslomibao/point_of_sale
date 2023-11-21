@@ -135,16 +135,16 @@ class TransactionSuccessScreen extends StatelessWidget {
                         final data = await read.startPrinting(add);
                         await read.bluetoothPrint.printReceipt({}, data);
                         if (context.mounted) {
-                          if (customer != null) {
-                            context
-                                .read<CustomerViewScreenProvider>()
-                                .initData(customer!.id.toString());
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                          // if (customer != null) {
+                          //   context
+                          //       .read<CustomerViewScreenProvider>()
+                          //       .initData(customer!.id.toString());
+                          //   Navigator.of(context).pop();
+                          //   Navigator.of(context).pop();
+                          //   Navigator.of(context).pop();
 
-                            return;
-                          }
+                          //   return;
+                          // }6587
                           Navigator.pushNamedAndRemoveUntil(
                             context,
                             '/home',
@@ -222,15 +222,6 @@ class TransactionSuccessScreen extends StatelessWidget {
                   width: double.infinity,
                   child: OutlinedButton(
                     onPressed: () async {
-                      if (customer != null) {
-                        context
-                            .read<CustomerViewScreenProvider>()
-                            .initData(customer!.id.toString());
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        return;
-                      }
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         '/home',

@@ -8,8 +8,6 @@ class Product {
   String description;
   int stock;
   double price;
-  //new
-  String measurement;
   double retailPrice;
   Product({
     this.id = 0,
@@ -19,7 +17,6 @@ class Product {
     required this.description,
     this.stock = 0,
     required this.price,
-    required this.measurement,
     required this.retailPrice,
   });
 
@@ -31,7 +28,6 @@ class Product {
       ProductDBHelper.colDescription: description,
       ProductDBHelper.colStock: stock,
       ProductDBHelper.colPrice: price,
-      ProductDBHelper.colMeasurement: measurement,
       ProductDBHelper.colReatailPrice: retailPrice,
     };
   }
