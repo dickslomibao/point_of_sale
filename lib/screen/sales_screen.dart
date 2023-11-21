@@ -84,7 +84,6 @@ class _SalesScreenState extends State<SalesScreen> {
       _invoiceList.forEach((element) {
         final date = DateTime.now();
         final productDate = DateTime.parse(element.date);
-        print(productDate);
         int yearToday = date.year;
         int monthToday = date.month;
         int productYear = productDate.year;
@@ -110,7 +109,6 @@ class _SalesScreenState extends State<SalesScreen> {
             int wom = productDate.weekOfMonth;
             int index = (wom - 1) > 3 ? 3 : (wom - 1);
             weeklyMonth[index].sales += element.totalAmount;
-
             weekmonthReceivable += element.custumerPayAmount;
           }
           // montly
