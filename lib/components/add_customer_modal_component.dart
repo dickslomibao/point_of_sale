@@ -8,8 +8,10 @@ import 'package:point_of_sales/helpers/categorydb.dart';
 import 'package:point_of_sales/helpers/productdb.dart';
 import 'package:point_of_sales/models/account_model.dart';
 import 'package:point_of_sales/models/product_model.dart';
+import 'package:provider/provider.dart';
 
 import '../models/customer_model.dart';
+import '../provider/theme_color.dart';
 
 class AddCustomerModal extends StatefulWidget {
   AddCustomerModal({Key? key, required this.add}) : super(key: key);
@@ -50,6 +52,8 @@ class _AddCustomerModalState extends State<AddCustomerModal> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    final theme = context.read<ThemeColorProvider>();
+
     return AlertDialog(
       content: Container(
         color: Colors.white,
@@ -98,8 +102,8 @@ class _AddCustomerModalState extends State<AddCustomerModal> {
                 margin: const EdgeInsets.only(top: 20),
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green[700]),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: theme.primary),
                   onPressed: () async {
                     String name = nameController.text;
                     String number = phoneNumber.text;

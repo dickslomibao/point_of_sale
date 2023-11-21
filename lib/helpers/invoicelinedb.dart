@@ -54,7 +54,8 @@ class InvoiceLineDBHelper {
     final db = await openDb();
     List<Map<String, dynamic>> data =
         await db.query(tblName, where: '$colProductId = ?', whereArgs: [id]);
-    data.forEach((element) {
+
+    for (var element in data) {
       list.add(
         InvoiceLine(
           productId: element[colProductId],
@@ -64,7 +65,8 @@ class InvoiceLineDBHelper {
           retailPirce: double.parse(element[colRetailPrice].toString()),
         ),
       );
-    });
+    }
+
     return list;
   }
 

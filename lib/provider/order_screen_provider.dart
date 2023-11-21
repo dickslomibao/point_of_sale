@@ -37,8 +37,6 @@ class OrderScreenProvider extends ChangeNotifier {
   void addORder(
     BuildContext context,
     String barcodeScanRes,
-    TextEditingController qtyController,
-    TextEditingController barcodeController,
   ) {
     bool barcodeIsValid = false;
     Product? product;
@@ -50,7 +48,7 @@ class OrderScreenProvider extends ChangeNotifier {
       }
     }
     if (barcodeIsValid) {
-      if (product!.stock <= 0) {
+      if (product!.stock <= 0 && product.type == 1) {
         showAlert(
             context: context, message: '${product.name} is out of stock.');
         return;
@@ -59,7 +57,7 @@ class OrderScreenProvider extends ChangeNotifier {
       for (var order in orderList) {
         if (order.productId == product.id) {
           productIsNotIn = false;
-          if ((order.qty + 1) > product.stock) {
+          if ((order.qty + 1) > product.stock && product.type == 1) {
             showAlert(
                 context: context,
                 message: "The item have only ${product.stock} stock.");
@@ -127,8 +125,8 @@ class OrderScreenProvider extends ChangeNotifier {
     } else {
       showAlert(context: context, message: 'Item not found');
     }
-    qtyController.clear();
-    barcodeController.clear();
+    // qtyController.clear();
+    // barcodeController.clear();
   }
 
   void showAlert({required BuildContext context, required String message}) {

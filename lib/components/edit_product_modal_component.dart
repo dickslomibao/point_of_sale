@@ -66,6 +66,7 @@ class _EditProductModalState extends State<EditProductModal> {
     nameController.text = widget.product.name;
     categoryController.text = widget.product.catId.toString();
     descController.text = widget.product.description;
+    retailPrice.text = widget.product.retailPrice.toString();
     priceController.text = widget.product.price.toString();
   }
 
@@ -214,6 +215,11 @@ class _EditProductModalState extends State<EditProductModal> {
                 controller: descController,
               ),
               TextFieldComponents(
+                label: "Retail price",
+                controller: retailPrice,
+                keyboardType: TextInputType.number,
+              ),
+              TextFieldComponents(
                 label: "Price",
                 controller: priceController,
                 keyboardType: TextInputType.number,
@@ -230,12 +236,14 @@ class _EditProductModalState extends State<EditProductModal> {
                       barcodeController,
                       nameController,
                       descController,
+                      retailPrice,
                       priceController
                     ];
                     final List<String> error = [
                       'Barcode is required',
                       'Name is required',
                       'Description is required',
+                      'Retail price is required',
                       'Price is required',
                     ];
                     bool isOk = true;
@@ -256,8 +264,9 @@ class _EditProductModalState extends State<EditProductModal> {
                           null) {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            content: Text("Invalid Price. Check your input"),
+                          builder: (context) => const AlertDialog(
+                            content:
+                                Text("Invalid retail price. Check your input"),
                           ),
                         );
                         return;
@@ -265,13 +274,42 @@ class _EditProductModalState extends State<EditProductModal> {
                       if (double.parse(inputList[3].text.toString()) <= 0) {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
+                          builder: (context) => const AlertDialog(
+                            content: Text("Retail price cannot be negative."),
+                          ),
+                        );
+                        return;
+                      }
+                      if (double.tryParse(inputList[4].text.toString()) ==
+                          null) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                            content: Text("Invalid price. Check your input"),
+                          ),
+                        );
+                        return;
+                      }
+                      if (double.parse(inputList[4].text.toString()) <= 0) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
                             content: Text("Price cannot be negative."),
                           ),
                         );
                         return;
                       }
-
+                      if (double.parse(inputList[3].text.toString()) >
+                          double.parse(inputList[4].text.toString())) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                            content: Text(
+                                "Selling Price should be greater than retail price."),
+                          ),
+                        );
+                        return;
+                      }
                       var temp = Product(
                         id: widget.product.id,
                         barcode: barcodeController.text,
@@ -280,6 +318,7 @@ class _EditProductModalState extends State<EditProductModal> {
                         description: descController.text,
                         price: double.parse(priceController.text),
                         retailPrice: double.parse(retailPrice.text),
+                        type: 1,
                       );
                       ProductDBHelper.update(temp);
                       widget.onUpdate();

@@ -30,23 +30,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
-              flexibleSpace: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.topRight,
-                    colors: [
-                      Color.fromRGBO(45, 161, 95, 100),
-                      Colors.green
-                    ], // Adjust the colors as needed
-                  ),
-                ),
-              ),
-              title: Text(
-                "CATEGORY",
-                style: GoogleFonts.lato(
+              title: const Text(
+                "Category",
+                style: TextStyle(
                   fontSize: 18,
-                  color: Colors.white,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -75,16 +62,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     );
                   },
                   child: Container(
-                    margin: EdgeInsets.only(right: 20),
+                    margin: const EdgeInsets.only(right: 20),
                     child: Row(
-                      children: [
-                        const Icon(
+                      children: const [
+                        Icon(
                           Icons.add,
                           size: 22,
                         ),
                         Text(
                           "New",
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
                           ),
@@ -94,18 +81,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   ),
                 ),
               ],
-              toolbarHeight: 60,
-              elevation: 0,
-              iconTheme: const IconThemeData(
-                size: 30,
-                color: Colors.white,
-              ),
             ),
             body: list.data!.isEmpty
-                ? Center(
+                ? const Center(
                     child: Text(
                       'Category is empty',
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                         color: Colors.black54,
@@ -124,7 +105,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text('Opps..'),
+                                    title: const Text('Opps..'),
                                     content: Text(
                                         "Are you sure you want to delete ${list.data![index]['title']} ?"),
                                     actions: [
@@ -132,9 +113,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                         onPressed: () {
                                           Navigator.of(context).pop(false);
                                         },
-                                        child: Text(
+                                        child: const Text(
                                           'Cancel',
-                                          style: GoogleFonts.poppins(
+                                          style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w500,
                                             color: Colors.red,
@@ -148,9 +129,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                         onPressed: () {
                                           Navigator.of(context).pop(true);
                                         },
-                                        child: Text(
+                                        child: const Text(
                                           "Ok",
-                                          style: GoogleFonts.poppins(
+                                          style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -162,7 +143,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               );
                             },
                             background: Container(
-                              padding: EdgeInsets.only(left: 20),
+                              padding: const EdgeInsets.only(left: 20),
                               alignment: Alignment.centerLeft,
                               child: const Icon(
                                 Icons.delete,
@@ -182,7 +163,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 borderRadius: BorderRadius.circular(
                                     12.0), // Rounded corners
                               ),
-                              tileColor: Color.fromRGBO(213, 236, 223, 100),
                               leading: icons[list.data![index]['icon']],
                               onTap: () {
                                 Navigator.of(context).push(
@@ -202,14 +182,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               },
                               title: Text(
                                 list.data![index]['title'],
-                                style: GoogleFonts.poppins(
+                                style: const TextStyle(
                                   fontSize: 17,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               subtitle: Text(
                                 list.data![index]['desc'],
-                                style: GoogleFonts.poppins(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -244,7 +224,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       },
                     ),
                   ),
-            drawer: MyDrawer(),
+            drawer: const MyDrawer(),
           );
         } else {
           return const Scaffold(

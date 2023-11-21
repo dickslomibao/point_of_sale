@@ -17,6 +17,7 @@ import '../components/customer_card_component.dart';
 import '../components/drawer_component.dart';
 import '../components/floating_action_order_component.dart';
 import '../components/product_card_component.dart';
+import '../components/text_field_component.dart';
 import '../helpers/customerdb.dart';
 import '../models/customer_model.dart';
 
@@ -29,11 +30,11 @@ class CustomerScreen extends StatefulWidget {
 
 class _CustomerScreenState extends State<CustomerScreen> {
   List<CustomerModel> customer = [];
-
+  List<CustomerModel> clone = [];
   bool _isLoading = true;
   void getCustomerList() async {
     customer = await CustomerDBHelper.getList();
-
+    clone = customer;
     setState(() {
       _isLoading = false;
     });
@@ -44,6 +45,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
     super.initState();
     getCustomerList();
   }
+
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +81,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
             child: Container(
               margin: EdgeInsets.only(right: 20),
               child: Row(
-                children: [
-                  const Icon(
+                children: const [
+                  Icon(
                     Icons.add,
                     size: 24,
                   ),
@@ -101,7 +104,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
               child: CircularProgressIndicator(
               color: Colors.green[700],
             ))
-          : customer.isEmpty
+          : clone.isEmpty
               ? const Center(
                   child: Text(
                     'Customer is empty',
@@ -113,28 +116,51 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   ),
                 )
               : Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView.builder(
-                    itemCount: customer.length,
-                    itemBuilder: (context, index) {
-                      final c = customer[index];
-                      return CustomerCard(
-                        customer: c,
-                        onDismissed: () {},
-                        onTap: () {
-                          if (widget.f != null) {
-                            widget.f!(c);
-                            return;
-                          }
-                          PersistentNavBarNavigator.pushNewScreen(
-                            context,
-                            screen: CustomerViewScren(customer: c),
-                            withNavBar: false,
-                          );
-                        },
-                        onUpdate: () {},
-                      );
-                    },
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    children: [
+                      TextFieldComponents(
+                          label: "Search",
+                          controller: searchController,
+                          onchange: (value) {
+                            setState(() {
+                              if (value == "") {
+                                customer = clone;
+                                return;
+                              }
+                              customer = clone
+                                  .where((e) => e.name.contains(value))
+                                  .toList();
+                            });
+                          }),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: customer.length,
+                          itemBuilder: (context, index) {
+                            final c = customer[index];
+                            return CustomerCard(
+                              customer: c,
+                              onDismissed: () {},
+                              onTap: () {
+                                if (widget.f != null) {
+                                  widget.f!(c);
+                                  return;
+                                }
+                                PersistentNavBarNavigator.pushNewScreen(
+                                  context,
+                                  screen: CustomerViewScren(customer: c),
+                                  withNavBar: false,
+                                );
+                              },
+                              onUpdate: () {},
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
       drawer: MyDrawer(),

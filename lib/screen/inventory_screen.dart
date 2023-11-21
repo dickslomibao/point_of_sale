@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:point_of_sales/screen/product_details_screen.dart';
 
 import '../components/bottom_navbar_component.dart';
 import '../components/drawer_component.dart';
@@ -119,9 +120,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
-                                return InventoryDetailsScreen(
-                                  product: _productlist[index],
-                                );
+                                return ProductDetailsScreen(
+                                    product: _productlist[index]);
                               },
                             ),
                           );

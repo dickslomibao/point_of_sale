@@ -19,9 +19,9 @@ class DrawerLink extends StatelessWidget {
       leading: icon,
       title: Text(
         title,
-        style: GoogleFonts.poppins(
+        style: const TextStyle(
           fontWeight: FontWeight.w500,
-          fontSize: 15,
+          fontSize: 17,
         ),
       ),
       onTap: () {

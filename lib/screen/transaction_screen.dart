@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:point_of_sales/helpers/invoicedb.dart';
 import 'package:point_of_sales/models/invoice_model.dart';
 
-import '../components/bottom_navbar_component.dart';
 import '../components/drawer_component.dart';
-import '../components/floating_action_order_component.dart';
+
+import '../components/select_filtered_date_component.dart';
 import 'transaction_details_screen.dart';
 
 class TransactionScreen extends StatefulWidget {
@@ -35,17 +34,28 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Transactions",
-          style: GoogleFonts.lato(
-            fontSize: 23,
+          style: TextStyle(
+            fontSize: 21,
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const SelectFilteredTransaction();
+                  },
+                );
+              },
+              icon: const Icon(Icons.filter_list_outlined))
+        ],
       ),
       body: _isLoading
           ? Center(
@@ -53,7 +63,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
               color: Colors.green[700],
             ))
           : invoice.isEmpty
-              ? Center(
+              ? const Center(
                   child: Text(
                     'Transaction is empty',
                     style: TextStyle(
@@ -83,16 +93,16 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           },
                           subtitle: Text(
                             "Total Price: ${invoice[index].totalAmount}",
-                            style: TextStyle(
-                              fontSize: 15,
+                            style: const TextStyle(
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: const Color.fromRGBO(0, 0, 0, .7),
+                              color: Color.fromRGBO(0, 0, 0, .7),
                             ),
                           ),
                           title: Text(
                             "Date: ${invoice[index].date}",
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 17,
                               fontWeight: FontWeight.w500,
                               color: Colors.green[800],
                             ),
@@ -102,7 +112,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     },
                   ),
                 ),
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
     );
   }
 }

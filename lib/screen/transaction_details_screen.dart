@@ -7,12 +7,14 @@ import 'package:point_of_sales/models/account_model.dart';
 import 'package:point_of_sales/models/invoice_line_model.dart';
 import 'package:point_of_sales/models/invoice_model.dart';
 import 'package:point_of_sales/models/product_model.dart';
+import 'package:provider/provider.dart';
 
 import '../components/bottom_navbar_component.dart';
 import '../components/drawer_component.dart';
 import '../components/floating_action_order_component.dart';
 import '../helpers/productdb.dart';
 import '../models/customer_model.dart';
+import '../provider/theme_color.dart';
 
 class TransactionDetailsScreen extends StatefulWidget {
   TransactionDetailsScreen({super.key, required this.invoice});
@@ -61,6 +63,8 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.read<ThemeColorProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -94,8 +98,8 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                               "Total Price: Php ${widget.invoice.totalAmount.toStringAsFixed(2)}",
                               style: TextStyle(
                                 fontSize: 19,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.green[800],
+                                fontWeight: FontWeight.w600,
+                                color: theme.primary,
                               ),
                             ),
                             const SizedBox(
@@ -182,6 +186,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                             description: "",
                             price: 0.00,
                             retailPrice: 0,
+                            type: 0,
                           ),
                         );
                         return Card(
@@ -199,9 +204,9 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                                   ? product.name
                                   : "<Product not found>",
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.green[800],
+                                color: theme.primary,
                               ),
                             ),
                             trailing: Text(

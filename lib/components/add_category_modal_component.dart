@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:point_of_sales/models/category_model.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/theme_color.dart';
 
 class Category_list {
   final int id;
@@ -37,107 +40,107 @@ class _AddCategoryModelState extends State<AddCategoryModel> {
     Category_list(
       id: 0,
       title: 'Add New',
-      icon: Icon(Icons.add),
+      icon: const Icon(Icons.add),
     ),
     Category_list(
       id: 1,
       title: 'Drinks',
-      icon: Icon(Icons.local_drink),
+      icon: const Icon(Icons.local_drink),
     ),
     Category_list(
       id: 2,
       title: 'Bread',
-      icon: Icon(Icons.local_dining),
+      icon: const Icon(Icons.local_dining),
     ),
     Category_list(
       id: 3,
       title: 'Junk Foods',
-      icon: Icon(Icons.fastfood),
+      icon: const Icon(Icons.fastfood),
     ),
     Category_list(
       id: 4,
       title: 'Fruits',
-      icon: Icon(Icons.local_florist),
+      icon: const Icon(Icons.local_florist),
     ),
     Category_list(
       id: 5,
       title: 'Vegetables',
-      icon: Icon(Icons.eco),
+      icon: const Icon(Icons.eco),
     ),
     Category_list(
       id: 6,
       title: 'Meat',
-      icon: Icon(Icons.shopping_cart),
+      icon: const Icon(Icons.shopping_cart),
     ),
     Category_list(
       id: 7,
       title: 'Dairy',
-      icon: Icon(Icons.local_mall),
+      icon: const Icon(Icons.local_mall),
     ),
     Category_list(
       id: 8,
       title: 'Cereal',
-      icon: Icon(Icons.local_pizza),
+      icon: const Icon(Icons.local_pizza),
     ),
     Category_list(
       id: 9,
       title: 'Canned Goods',
-      icon: Icon(Icons.anchor),
+      icon: const Icon(Icons.anchor),
     ),
     Category_list(
       id: 10,
       title: 'Snacks',
-      icon: Icon(Icons.fastfood),
+      icon: const Icon(Icons.fastfood),
     ),
     Category_list(
       id: 11,
       title: 'Bakery',
-      icon: Icon(Icons.cake),
+      icon: const Icon(Icons.cake),
     ),
     Category_list(
       id: 12,
       title: 'Personal Care',
-      icon: Icon(Icons.accessibility),
+      icon: const Icon(Icons.accessibility),
     ),
     Category_list(
       id: 13,
       title: 'Cleaning Supplies',
-      icon: Icon(Icons.cleaning_services),
+      icon: const Icon(Icons.cleaning_services),
     ),
     Category_list(
       id: 14,
       title: 'Health and Wellness',
-      icon: Icon(Icons.healing),
+      icon: const Icon(Icons.healing),
     ),
     Category_list(
       id: 15,
       title: 'Household',
-      icon: Icon(Icons.home),
+      icon: const Icon(Icons.home),
     ),
     Category_list(
       id: 16,
       title: 'Baby Care',
-      icon: Icon(Icons.child_friendly),
+      icon: const Icon(Icons.child_friendly),
     ),
     Category_list(
       id: 17,
       title: 'Pet Supplies',
-      icon: Icon(Icons.pets),
+      icon: const Icon(Icons.pets),
     ),
     Category_list(
       id: 18,
       title: 'Frozen Foods',
-      icon: Icon(Icons.ac_unit),
+      icon: const Icon(Icons.ac_unit),
     ),
     Category_list(
       id: 19,
       title: 'Condiments',
-      icon: Icon(Icons.restaurant),
+      icon: const Icon(Icons.restaurant),
     ),
     Category_list(
       id: 20,
       title: 'Spices',
-      icon: Icon(Icons.restaurant_menu),
+      icon: const Icon(Icons.restaurant_menu),
     ),
     // Add more categories as needed
   ];
@@ -145,6 +148,8 @@ class _AddCategoryModelState extends State<AddCategoryModel> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    final theme = context.read<ThemeColorProvider>();
+
     return AlertDialog(
       content: Container(
         color: Colors.white,
@@ -169,11 +174,11 @@ class _AddCategoryModelState extends State<AddCategoryModel> {
                     onTap: () {
                       Navigator.of(context).pop();
                     },
-                    child: Icon(Icons.close),
+                    child: const Icon(Icons.close),
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               DropdownButtonHideUnderline(
@@ -191,12 +196,18 @@ class _AddCategoryModelState extends State<AddCategoryModel> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text("Enter a category"),
+                                      title: const Text("Enter a category"),
                                       content: TextField(
                                         controller: nameController,
-                                        decoration: InputDecoration(
-                                            labelText: "Name",
-                                            prefixIcon: Icon(Icons.shopify)),
+                                        decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: 1,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                       actions: [
                                         TextButton(
@@ -208,7 +219,8 @@ class _AddCategoryModelState extends State<AddCategoryModel> {
                                                 categories.add(Category_list(
                                                     id: categories.length + 1,
                                                     title: nameController.text,
-                                                    icon: Icon(Icons.shopify)));
+                                                    icon: const Icon(
+                                                        Icons.shopify)));
 
                                                 selectedCategoryId = newCatId!;
                                               });
@@ -231,7 +243,7 @@ class _AddCategoryModelState extends State<AddCategoryModel> {
                               child: Row(
                                 children: [
                                   category.icon,
-                                  SizedBox(width: 10),
+                                  const SizedBox(width: 10),
                                   Text(category.title), // Change to title
                                 ],
                               ),
@@ -239,7 +251,7 @@ class _AddCategoryModelState extends State<AddCategoryModel> {
                           : Row(
                               children: [
                                 category.icon,
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
                                 Text(category.title), // Change to title
                               ],
                             ),
@@ -262,25 +274,39 @@ class _AddCategoryModelState extends State<AddCategoryModel> {
               //   controller: nameController,
               //   decoration: InputDecoration(labelText: "Name"),
               // ),
+              SizedBox(
+                height: 5,
+              ),
               TextField(
                 controller: descController,
-                decoration: InputDecoration(labelText: "Description"),
+                decoration: const InputDecoration(
+                  labelText: "Description",
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 1,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
               ),
               Center(
                 child: Container(
                   height: 40,
                   margin: const EdgeInsets.only(top: 20),
-                  width: 100,
+                  width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromRGBO(2, 253, 111, 0.624),
+                      backgroundColor: theme.primary,
                     ),
                     onPressed: () {
                       if (nameController.text.isEmpty) {
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
+                            return const AlertDialog(
                               content: Text('Category Name is required'),
                             );
                           },
@@ -291,7 +317,7 @@ class _AddCategoryModelState extends State<AddCategoryModel> {
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
+                            return const AlertDialog(
                               content: Text('Category Description is required'),
                             );
                           },
@@ -362,7 +388,7 @@ void main() {
             onPressed: () {
               // Your logic to show the AddCategoryModel dialog here
             },
-            child: Text('Show Add Category Dialog'),
+            child: const Text('Show Add Category Dialog'),
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:point_of_sales/color.dart';
+import 'package:point_of_sales/provider/account_details_provider.dart';
 import 'package:point_of_sales/provider/customer_view_screen_provider.dart';
 import 'package:point_of_sales/provider/order_screen_provider.dart';
 import 'package:point_of_sales/provider/print_reciept_provider.dart';
@@ -33,6 +34,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => ThemeColorProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AccountDetailsProvider(),
         )
       ],
       child: Consumer<ThemeColorProvider>(

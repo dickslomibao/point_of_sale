@@ -25,12 +25,11 @@ class SalesChart extends StatelessWidget {
       children: [
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  margin: EdgeInsets.only(top: 10),
                   height: 300,
                   child: SfCartesianChart(
                     title: ChartTitle(
@@ -43,7 +42,6 @@ class SalesChart extends StatelessWidget {
                     ),
                     primaryXAxis: CategoryAxis(),
                     plotAreaBorderColor: theme.primary,
-                    margin: EdgeInsets.all(10),
                     series: <LineSeries<Sales, String>>[
                       LineSeries<Sales, String>(
                         dataSource: data,

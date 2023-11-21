@@ -29,6 +29,7 @@ class _AddProductModelState extends State<AddProductModel> {
   var qtyController = TextEditingController();
   var priceController = TextEditingController();
   var retailPrice = TextEditingController();
+  bool isCheck = false;
   var catId = 0;
   Future<void> scanBarcodeNormal() async {
     String barcodeScanRes;
@@ -74,7 +75,7 @@ class _AddProductModelState extends State<AddProductModel> {
       content: Container(
         color: Colors.white,
         width: width * .75,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,7 +85,7 @@ class _AddProductModelState extends State<AddProductModel> {
                 children: [
                   Text(
                     "Add Product",
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
                       color: Colors.black87,
@@ -94,16 +95,36 @@ class _AddProductModelState extends State<AddProductModel> {
                     onTap: () {
                       Navigator.of(context).pop();
                     },
-                    child: Icon(Icons.close),
+                    child: const Icon(Icons.close),
                   ),
                 ],
               ),
-              SizedBox(
-                height: 20,
+              const SizedBox(
+                height: 10,
+              ),
+              CheckboxListTile(
+                value: isCheck,
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (v) {
+                  setState(() {
+                    isCheck = !isCheck;
+                  });
+                },
+                title: const Text(
+                  "Sub-standard product",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
               ),
               Text(
                 "Barcode: ",
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: Colors.black87,
@@ -114,7 +135,7 @@ class _AddProductModelState extends State<AddProductModel> {
                 children: [
                   Expanded(
                     child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 10),
+                      margin: const EdgeInsets.symmetric(vertical: 10),
                       child: TextField(
                         onChanged: (value) async {
                           if (!await validateCode(value)) {
@@ -152,7 +173,7 @@ class _AddProductModelState extends State<AddProductModel> {
               ),
               Text(
                 "Category: ",
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: Colors.black87,
@@ -167,7 +188,7 @@ class _AddProductModelState extends State<AddProductModel> {
                       catId = category.data![0]['id'];
                     }
                     return Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black26),
                         borderRadius: BorderRadius.circular(5),
@@ -196,7 +217,7 @@ class _AddProductModelState extends State<AddProductModel> {
                             ),
                     );
                   } else {
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 },
               ),
@@ -204,10 +225,13 @@ class _AddProductModelState extends State<AddProductModel> {
                 label: "Description",
                 controller: descController,
               ),
-              TextFieldComponents(
-                label: "Quantity",
-                controller: qtyController,
-                keyboardType: TextInputType.number,
+              Visibility(
+                visible: !isCheck,
+                child: TextFieldComponents(
+                  label: "Quantity",
+                  controller: qtyController,
+                  keyboardType: TextInputType.number,
+                ),
               ),
               TextFieldComponents(
                 label: "Retail Price",
@@ -232,6 +256,7 @@ class _AddProductModelState extends State<AddProductModel> {
                       nameController,
                       descController,
                       qtyController,
+                      retailPrice,
                       priceController
                     ];
                     final List<String> error = [
@@ -239,10 +264,15 @@ class _AddProductModelState extends State<AddProductModel> {
                       'Name is required',
                       'Description is required',
                       'Quatity is required',
-                      'Price is required',
+                      'Retail price is required',
+                      'Selling Price is required',
                     ];
+
                     bool isOk = true;
                     for (int i = 0; i < inputList.length; i++) {
+                      if (i == 3 && isCheck) {
+                        continue;
+                      }
                       if (inputList[i].text == "") {
                         showDialog(
                           context: context,
@@ -259,37 +289,42 @@ class _AddProductModelState extends State<AddProductModel> {
                       if (catId == 0) {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
+                          builder: (context) => const AlertDialog(
                             content: Text("Category is required"),
                           ),
                         );
                         return;
                       }
-                      if (int.tryParse(inputList[3].text.toString()) == null) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            content:
-                                Text("Invalid Quantity. Positive integer only"),
-                          ),
-                        );
-                        return;
-                      }
-                      if (int.parse(inputList[3].text.toString()) < 0) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            content: Text("Quantity cannot be negative."),
-                          ),
-                        );
-                        return;
+
+                      if (!isCheck) {
+                        if (int.tryParse(inputList[3].text.toString()) ==
+                            null) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => const AlertDialog(
+                              content: Text(
+                                  "Invalid Quantity. Positive integer only"),
+                            ),
+                          );
+                          return;
+                        }
+                        if (int.parse(inputList[3].text.toString()) < 0) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => const AlertDialog(
+                              content: Text("Quantity cannot be negative."),
+                            ),
+                          );
+                          return;
+                        }
                       }
                       if (double.tryParse(inputList[4].text.toString()) ==
                           null) {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            content: Text("Invalid Price. Check your input"),
+                          builder: (context) => const AlertDialog(
+                            content:
+                                Text("Invalid Retail price. Check your input"),
                           ),
                         );
                         return;
@@ -297,8 +332,40 @@ class _AddProductModelState extends State<AddProductModel> {
                       if (double.parse(inputList[4].text.toString()) <= 0) {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            content: Text("Price cannot be negative."),
+                          builder: (context) => const AlertDialog(
+                            content: Text("Retail price cannot be negative."),
+                          ),
+                        );
+                        return;
+                      }
+                      if (double.tryParse(inputList[5].text.toString()) ==
+                          null) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                            content:
+                                Text("Invalid Selling Price. Check your input"),
+                          ),
+                        );
+                        return;
+                      }
+                      if (double.parse(inputList[5].text.toString()) <= 0) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                            content: Text("Selling Price cannot be negative."),
+                          ),
+                        );
+                        return;
+                      }
+
+                      if (double.parse(inputList[4].text.toString()) >
+                          double.parse(inputList[5].text.toString())) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                            content: Text(
+                                "Selling Price should be greater than retail price."),
                           ),
                         );
                         return;
@@ -308,9 +375,10 @@ class _AddProductModelState extends State<AddProductModel> {
                         name: nameController.text,
                         catId: catId,
                         description: descController.text,
-                        stock: int.parse(qtyController.text),
+                        stock: isCheck ? 0 : int.parse(qtyController.text),
                         price: double.parse(priceController.text),
                         retailPrice: double.parse(retailPrice.text),
+                        type: isCheck ? 2 : 1,
                       );
                       widget.add(temp);
                       Navigator.of(context).pop();
@@ -320,7 +388,7 @@ class _AddProductModelState extends State<AddProductModel> {
                       //     backgroundColor: Colors.green[700],
                       //     content: Text(
                       //       'Successfuly added',
-                      //       style: GoogleFonts.poppins(
+                      //       style: TextStyle(
                       //         fontSize: 15,
                       //         fontWeight: FontWeight.w500,
                       //       ),
@@ -338,7 +406,7 @@ class _AddProductModelState extends State<AddProductModel> {
                   },
                   child: Text(
                     "Add item",
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w500,
                     ),

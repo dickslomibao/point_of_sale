@@ -26,11 +26,12 @@ class _CategoryProductListState extends State<CategoryProductList> {
   void _getProducList() async {
     final data = await ProductDBHelper.getList();
     setState(() {
-      data.forEach((element) {
+      for (var element in data) {
         if (element.catId == widget.category.id) {
           catProduct.add(element);
         }
-      });
+      }
+
       isLoading = false;
     });
   }
@@ -49,8 +50,8 @@ class _CategoryProductListState extends State<CategoryProductList> {
       appBar: AppBar(
         title: Text(
           widget.category.title,
-          style: GoogleFonts.lato(
-            fontSize: 23,
+          style: TextStyle(
+            fontSize: 21,
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),
@@ -65,7 +66,7 @@ class _CategoryProductListState extends State<CategoryProductList> {
               ? Center(
                   child: Text(
                     'No item',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
                       color: Colors.black54,
@@ -91,24 +92,27 @@ class _CategoryProductListState extends State<CategoryProductList> {
                           },
                           title: Text(
                             catProduct[index].name,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 17,
                               fontWeight: FontWeight.w500,
                               color: Colors.green[700],
                             ),
                           ),
                           subtitle: Text(
                             catProduct[index].description,
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          trailing: Text(
-                            "Stock: ${catProduct[index].stock.toString()}",
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
+                          trailing: Visibility(
+                            visible: catProduct[index].type == 1,
+                            child: Text(
+                              "Stock: ${catProduct[index].stock.toString()}",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),

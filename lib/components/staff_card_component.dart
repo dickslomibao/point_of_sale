@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:point_of_sales/components/edit_account_modal_component.dart';
 import 'package:point_of_sales/helpers/productdb.dart';
 import 'package:point_of_sales/models/account_model.dart';
 import 'package:point_of_sales/models/category_model.dart';
@@ -102,17 +103,15 @@ class StaffCard extends StatelessWidget {
           ),
           trailing: IconButton(
             onPressed: () {
-              // showDialog(
-              //   context: context,
-              //   builder: (context) {
-              //     return EditProductModal(
-              //       onUpdate: () {
-              //         onUpdate();
-              //       },
-              //       product: product,
-              //     );
-              //   },
-              // );
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return EditAccountModal(
+                    onUpdate: onUpdate,
+                    account: account,
+                  );
+                },
+              );
             },
             icon: Icon(
               Icons.edit_note_outlined,

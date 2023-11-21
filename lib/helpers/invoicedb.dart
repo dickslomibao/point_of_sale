@@ -51,25 +51,20 @@ class InvoiceDBHelper {
   }
 
   static Future<List<Invoice>> getList() async {
-    List<Invoice> list = [];
     final db = await openDb();
     List<Map<String, dynamic>> data = await db.query(tblName);
+    return data.map((e) => Invoice.fromJson(e)).toList();
+  }
 
-    data.forEach((element) {
-      list.add(Invoice(
-        id: element[InvoiceDBHelper.colId],
-        custumerPayAmount:
-            double.parse(element[InvoiceDBHelper.colPay].toString()),
-        totalAmount:
-            double.parse(element[InvoiceDBHelper.colTotalAmount].toString()),
-        date: element[InvoiceDBHelper.colDate],
-        processBy: element[InvoiceDBHelper.colProccessBy].toString(),
-        customerId: element[InvoiceDBHelper.colCustomerId].toString(),
-        tenderedAmount:
-            double.parse(element[InvoiceDBHelper.colTenderedAmount].toString()),
-      ));
-    });
-    return list;
+  static Future<List<Invoice>> getFilteredTransaction(
+      String startDate, String endDate) async {
+    final db = await openDb();
+    List<Map<String, dynamic>> data = await db.query(
+      tblName,
+      where: 'date($colDate) >= ? AND date($colDate) <= ?',
+      whereArgs: [startDate, endDate],
+    );
+    return data.map((e) => Invoice.fromJson(e)).toList();
   }
 
   static Future<List<Map<String, dynamic>>> storeInFirebase() async {
@@ -99,6 +94,13 @@ class InvoiceDBHelper {
     final db = await openDb();
     List<Map<String, dynamic>> data =
         await db.query(tblName, where: '$colCustomerId = ?', whereArgs: [id]);
+    return data.map((e) => Invoice.fromJson(e)).toList();
+  }
+
+  static Future<List<Invoice>> getStaffInvoice(String id) async {
+    final db = await openDb();
+    List<Map<String, dynamic>> data =
+        await db.query(tblName, where: '$colProccessBy = ?', whereArgs: [id]);
     return data.map((e) => Invoice.fromJson(e)).toList();
   }
 

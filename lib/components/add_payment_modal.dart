@@ -6,6 +6,7 @@ import 'package:point_of_sales/screen/customer_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product_model.dart';
+import '../provider/theme_color.dart';
 
 class AddPaymentModal extends StatelessWidget {
   AddPaymentModal({
@@ -21,6 +22,7 @@ class AddPaymentModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    final theme = context.watch<ThemeColorProvider>();
 
     return AlertDialog(
       title: Text(
@@ -47,13 +49,55 @@ class AddPaymentModal extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 20),
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green[700]),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: theme.primary),
                   onPressed: () async {
+                    if (controller.text.isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (context) =>
+                            AlertDialog(content: Text('Amount is required')),
+                      );
+                      return;
+                    }
+
+                    if (double.tryParse(controller.text) == null) {
+                      showDialog(
+                        context: context,
+                        builder: (context) =>
+                            AlertDialog(content: Text('Invalid Amount')),
+                      );
+                      return;
+                    }
+                    if (double.parse(controller.text) > balance) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          content: Text(
+                            'The cutomer only have ${balance}.',
+                          ),
+                        ),
+                      );
+                      return;
+                    }
                     await context
                         .read<CustomerViewScreenProvider>()
                         .makePayment(customerId, double.parse(controller.text));
+
                     if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.green[700],
+                          content: const Text(
+                            'Payment Successfully.',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      );
                       Navigator.of(context).pop();
                     }
                   },

@@ -132,112 +132,110 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
         ),
       ),
       body: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Card(
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(15.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Name: ${widget.product.name}",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.green[800],
-                          ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Name: ${widget.product.name}",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.green[800],
                         ),
-                        Text(
-                          "Price: ${widget.product.price}",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                          ),
+                      ),
+                      Text(
+                        "Price: ${widget.product.price}",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
                         ),
-                        Text(
-                          "Stock: ${widget.product.stock}",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                          ),
+                      ),
+                      Text(
+                        "Stock: ${widget.product.stock}",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
                         ),
-                        Column(
-                          children: [
-                            if (widget.product.stock >= 1 &&
-                                widget.product.stock <= 5)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                  "Almost out of stock",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 18,
-                                    color: Colors.red,
-                                  ),
+                      ),
+                      Column(
+                        children: [
+                          if (widget.product.stock >= 1 &&
+                              widget.product.stock <= 5)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text(
+                                "Almost out of stock",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: Colors.red,
                                 ),
                               ),
-                            if (widget.product.stock == 0)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                  "Out of stock",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 18,
-                                    color: Colors.red,
-                                  ),
+                            ),
+                          if (widget.product.stock == 0)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text(
+                                "Out of stock",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: Colors.red,
                                 ),
                               ),
-                          ],
-                        ),
-                      ],
-                    ),
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    "Overall Product Summary: ",
-                    style: GoogleFonts.poppins(
-                      fontSize: 19,
-                      fontWeight: FontWeight.w400,
-                      color: Color.fromRGBO(0, 0, 0, .8),
-                    ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  "Overall Product Summary: ",
+                  style: GoogleFonts.poppins(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w400,
+                    color: Color.fromRGBO(0, 0, 0, .8),
                   ),
                 ),
-                Card(
-                  color: Colors.green[700],
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Total sold items: ${_totalSold()}",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
+              ),
+              Card(
+                color: Colors.green[700],
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Total sold items: ${_totalSold()}",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          color: Colors.white,
                         ),
-                        Text(
-                          "Total Sales: ${_totalSales()}",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
+                      ),
+                      Text(
+                        "Total Sales: ${_totalSales()}",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          color: Colors.white,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                SalesChart(data: sales, title: "Daily Sales for this week"),
-              ],
-            ),
+              ),
+              SalesChart(data: sales, title: "Daily Sales for this week"),
+            ],
           ),
         ),
       ),

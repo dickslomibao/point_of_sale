@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               title: const Text(
                 "iTrack",
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 21,
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
                 ),
@@ -402,7 +402,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                         catId: 0,
                                                         description: "",
                                                         price: 0,
-                                                        retailPrice: 0);
+                                                        retailPrice: 0,
+                                                        type: 0);
                                                   },
                                                 );
                                                 return PopularProductCard(

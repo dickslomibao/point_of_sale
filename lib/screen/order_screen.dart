@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:point_of_sales/components/add_order_button.dart';
 import 'package:point_of_sales/helpers/productdb.dart';
 import 'package:point_of_sales/models/invoice_line_model.dart';
+import 'package:point_of_sales/screen/add_product_screen.dart';
 import 'package:point_of_sales/screen/checkout_screen.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:provider/provider.dart';
@@ -36,9 +36,10 @@ class _OrderScreenState extends State<OrderScreen> {
       barcodeScanRes = 'Failed to get platform version.';
     }
     if (!mounted) return;
-    context
-        .read<OrderScreenProvider>()
-        .addORder(context, barcodeScanRes, qtyController, barcodeController);
+    context.read<OrderScreenProvider>().addORder(
+          context,
+          barcodeScanRes,
+        );
   }
 
   @override
@@ -68,7 +69,7 @@ class _OrderScreenState extends State<OrderScreen> {
         title: const Text(
           "Order",
           style: TextStyle(
-            fontSize: 23,
+            fontSize: 21,
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),
@@ -116,13 +117,41 @@ class _OrderScreenState extends State<OrderScreen> {
               color: Colors.white70,
             ),
           if (read.productList.isNotEmpty)
-            AddOrderBUtton(
-              controller: barcodeController,
-              add: () {
-                context.read<OrderScreenProvider>().addORder(context,
-                    barcodeController.text, qtyController, barcodeController);
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AddProductScreenForOrder(
+                      onTap: (Product p) {
+                        context.read<OrderScreenProvider>().addORder(
+                              context,
+                              p.barcode,
+                            );
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                );
               },
-            ),
+              child: Container(
+                margin: EdgeInsets.only(right: 20),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.add,
+                      size: 20,
+                    ),
+                    Text(
+                      "Add",
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
         ],
       ),
       body: watch.isLoading
@@ -317,8 +346,6 @@ class _OrderScreenState extends State<OrderScreen> {
                                                     .addORder(
                                                       context,
                                                       item.barcode,
-                                                      qtyController,
-                                                      barcodeController,
                                                     );
                                               },
                                               icon: const Icon(Icons.add),

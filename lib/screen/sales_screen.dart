@@ -100,15 +100,16 @@ class _SalesScreenState extends State<SalesScreen> {
             salesMontly += element.totalAmount;
             //for weekly
             int weeKofYearToday = getWeekOfYear(date.toString());
-            int ProductWeekOfYear = getWeekOfYear(productDate.toString());
-            if (weeKofYearToday == ProductWeekOfYear) {
+            int productWeekOfYear = getWeekOfYear(productDate.toString());
+            if (weeKofYearToday == productWeekOfYear) {
               int day = productDate.weekday;
               weekly[day - 1].sales += element.totalAmount;
               weekReceivable += element.custumerPayAmount;
             }
             //for week of month
             int wom = productDate.weekOfMonth;
-            weeklyMonth[wom - 1].sales += element.totalAmount;
+            int index = (wom - 1) > 3 ? 3 : (wom - 1);
+            weeklyMonth[index].sales += element.totalAmount;
 
             weekmonthReceivable += element.custumerPayAmount;
           }

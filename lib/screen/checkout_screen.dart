@@ -146,32 +146,6 @@ class CheckOutScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          // child: ListTile(
-                          //   contentPadding: const EdgeInsets.symmetric(
-                          //       horizontal: 0.0, vertical: 0),
-                          //   title: Text(
-                          //     product.name,
-                          //     style: const TextStyle(
-                          //       fontSize: 17,
-                          //       fontWeight: FontWeight.w500,
-                          //     ),
-                          //     overflow: TextOverflow.ellipsis,
-                          //   ),
-                          //   subtitle: Text(
-                          //     "Price: ${order[index].productPrice.toStringAsFixed(2)} ",
-                          //     style: const TextStyle(
-                          //       fontSize: 15,
-                          //       fontWeight: FontWeight.w500,
-                          //     ),
-                          //   ),
-                          //   trailing: Text(
-                          //     " * ${order[index].qty} = ${subtotal.toStringAsFixed(2)}",
-                          //     style: const TextStyle(
-                          //       fontSize: 15,
-                          //       fontWeight: FontWeight.w500,
-                          //     ),
-                          //   ),
-                          // ),
                         );
                       },
                     ),
@@ -299,7 +273,19 @@ class CheckOutScreen extends StatelessWidget {
                               id: temp.productId, qty: temp.qty);
                         }
                         double change = amount - totalPrice();
-
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.green[700],
+                            content: const Text(
+                              'Ordered Successfully.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        );
                         PersistentNavBarNavigator.pushNewScreen(
                           context,
                           withNavBar: false,
@@ -351,9 +337,23 @@ class CheckOutScreen extends StatelessWidget {
                           temp.invoiceId = uuid;
                           InvoiceLineDBHelper.insert(temp);
                           ProductDBHelper.minus(
-                              id: temp.productId, qty: temp.qty);
+                            id: temp.productId,
+                            qty: temp.qty,
+                          );
                         }
-
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.green[700],
+                            content: const Text(
+                              'Ordered Successfully.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        );
                         PersistentNavBarNavigator.pushNewScreen(
                           context,
                           withNavBar: false,
@@ -390,6 +390,19 @@ class CheckOutScreen extends StatelessWidget {
                                     ProductDBHelper.minus(
                                         id: temp.productId, qty: temp.qty);
                                   }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: Colors.green[700],
+                                      content: const Text(
+                                        'Ordered Successfully.',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  );
                                   PersistentNavBarNavigator.pushNewScreen(
                                     context,
                                     withNavBar: false,

@@ -45,7 +45,7 @@ class _ProductScreenState extends State<ProductScreen> {
         title: const Text(
           "Product",
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 21,
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),

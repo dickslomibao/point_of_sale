@@ -1,6 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:point_of_sales/helpers/accountdb.dart';
 import 'package:point_of_sales/helpers/categorydb.dart';
+import 'package:point_of_sales/helpers/customerdb.dart';
 import 'package:point_of_sales/helpers/invoicedb.dart';
 import 'package:point_of_sales/helpers/invoicelinedb.dart';
 import 'package:point_of_sales/helpers/productdb.dart';
@@ -47,7 +50,7 @@ class _SettingsScreennState extends State<SettingsScreenn> {
   void setGEtKey() async {
     _prefs = await SharedPreferences.getInstance();
     if (!_prefs!.containsKey("appid")) {
-      await _prefs!.setString("appid", const Uuid().v4());
+      await _prefs!.setString("appid", const Uuid().v4().substring(0, 8));
       id = _prefs!.getString("appid");
     }
     id = _prefs!.getString("appid");
@@ -80,20 +83,13 @@ class _SettingsScreennState extends State<SettingsScreenn> {
             icon: const Icon(Icons.info_outline),
           )
         ],
-        backgroundColor: Colors.green[700],
         title: Text(
           "Settings",
-          style: GoogleFonts.lato(
-            fontSize: 23,
+          style: TextStyle(
+            fontSize: 21,
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),
-        ),
-        toolbarHeight: 60,
-        elevation: 0,
-        iconTheme: const IconThemeData(
-          size: 30,
-          color: Colors.white,
         ),
       ),
       body: Column(
@@ -109,46 +105,71 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                 ),
                 onPressed: () async {
                   try {
+                    showDialog(
+                      context: context,
+                      builder: (context) => const AlertDialog(
+                        content: Text('Processing...'),
+                      ),
+                    );
                     final response =
                         await InternetAddress.lookup('www.google.com');
+
                     if (response.isNotEmpty) {
                       final category = await CategoryDBHelper.getList();
                       final product = await ProductDBHelper.storeInFirebase();
                       final invoice = await InvoiceDBHelper.storeInFirebase();
                       final line = await InvoiceLineDBHelper.storeInFirebase();
-
-                      category.forEach((element) {
-                        FirebaseFirestore.instance
+                      final account = await AccountDbHelper.storeInFirebase();
+                      final customer = await CustomerDBHelper.storeInFirebase();
+                      for (var element in account) {
+                        await FirebaseFirestore.instance
+                            .collection('account')
+                            .doc(id)
+                            .collection('account')
+                            .doc(element[CategoryDBHelper.colId].toString())
+                            .set(element);
+                      }
+                      for (var element in customer) {
+                        await FirebaseFirestore.instance
+                            .collection('customer')
+                            .doc(id)
+                            .collection('customer')
+                            .doc(element[CategoryDBHelper.colId].toString())
+                            .set(element);
+                      }
+                      for (var element in category) {
+                        await FirebaseFirestore.instance
                             .collection('category')
                             .doc(id)
                             .collection('category')
                             .doc(element[CategoryDBHelper.colId].toString())
                             .set(element);
-                      });
-                      product.forEach((element) {
-                        FirebaseFirestore.instance
+                      }
+                      for (var element in product) {
+                        await FirebaseFirestore.instance
                             .collection('product')
                             .doc(id)
                             .collection('product')
                             .doc(element[ProductDBHelper.colId].toString())
                             .set(element);
-                      });
-                      invoice.forEach((element) {
-                        FirebaseFirestore.instance
+                      }
+                      for (var element in invoice) {
+                        await FirebaseFirestore.instance
                             .collection('invoice')
                             .doc(id)
                             .collection('invoice')
                             .doc(element[InvoiceDBHelper.colId].toString())
                             .set(element);
-                      });
-                      line.forEach((element) {
-                        FirebaseFirestore.instance
+                      }
+
+                      for (var element in line) {
+                        await FirebaseFirestore.instance
                             .collection('invoiceLine')
                             .doc(id)
                             .collection('invoiceLine')
                             .doc(element[InvoiceLineDBHelper.colId].toString())
                             .set(element);
-                      });
+                      }
 
                       if (context.mounted) {
                         showDialog(
@@ -159,6 +180,7 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                               actions: [
                                 OutlinedButton(
                                     onPressed: () {
+                                      Navigator.pop(context);
                                       Navigator.pop(context);
                                     },
                                     child: const Text("Ok"))
@@ -172,6 +194,7 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                       }
                     }
                   } on SocketException catch (err) {
+                    Navigator.of(context).pop();
                     alertInternet("Please check your internet Connection");
                   }
                 },
@@ -205,6 +228,7 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                               ),
                               onPressed: () async {
                                 try {
+                                  print(key.text);
                                   final response = await InternetAddress.lookup(
                                       'www.google.com');
                                   if (response.isNotEmpty) {
@@ -232,14 +256,36 @@ class _SettingsScreennState extends State<SettingsScreenn> {
                                         .doc(key.text)
                                         .collection("invoiceLine")
                                         .get();
-
+                                    final account = await FirebaseFirestore
+                                        .instance
+                                        .collection("account")
+                                        .doc(key.text)
+                                        .collection("account")
+                                        .get();
+                                    final customer = await FirebaseFirestore
+                                        .instance
+                                        .collection("customer")
+                                        .doc(key.text)
+                                        .collection("customer")
+                                        .get();
+                                    print(account.docs.first);
                                     if (category.docs.isEmpty &&
                                         product.docs.isEmpty &&
                                         invoice.docs.isEmpty &&
-                                        invoiceLine.docs.isEmpty) {
+                                        invoiceLine.docs.isEmpty &&
+                                        customer.docs.isEmpty &&
+                                        account.docs.isEmpty) {
                                       return alertInternet(
                                           "Check your provided key.");
                                     } else {
+                                      account.docs.forEach((element) async {
+                                        await AccountDbHelper.firestoreInsert(
+                                            element.data());
+                                      });
+                                      customer.docs.forEach((element) async {
+                                        await CustomerDBHelper.firestoreInsert(
+                                            element.data());
+                                      });
                                       category.docs.forEach((element) async {
                                         await CategoryDBHelper.firestoreInsert(
                                             element.data());

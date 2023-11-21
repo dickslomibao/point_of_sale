@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:point_of_sales/screen/credits_screen.dart';
+import 'package:point_of_sales/screen/home_screen.dart';
 import 'package:point_of_sales/screen/settings.screen.dart';
 import 'package:point_of_sales/screen/account_screen.dart';
 import 'package:point_of_sales/screen/switchstore_screen.dart';
@@ -23,7 +24,7 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
-    final theme = context.read<ThemeColorProvider>();
+    final theme = context.watch<ThemeColorProvider>();
 
     return Drawer(
       backgroundColor: theme.primary,
@@ -57,31 +58,13 @@ class MyDrawer extends StatelessWidget {
             child: Column(
               children: [
                 DrawerLink(
-                  icon: const Icon(Icons.category_outlined),
-                  title: "Category",
+                  icon: Icon(color: theme.primary, Icons.home_filled),
+                  title: "Home",
                   onPress: () {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
-                      screen: CategoryScreen(),
-                      withNavBar: false, // OPTIONAL VALUE. True by default.
-                      pageTransitionAnimation:
-                          PageTransitionAnimation.cupertino,
-                    );
-                    // Navigator.of(context).pushReplacement(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => CategoryScreen(),
-                    //   ),
-                    // );
-                  },
-                ),
-                DrawerLink(
-                  icon: const Icon(Icons.card_travel_outlined),
-                  title: "Transaction",
-                  onPress: () {
-                    PersistentNavBarNavigator.pushNewScreen(
-                      context,
-                      screen: TransactionScreen(),
-                      withNavBar: false, // OPTIONAL VALUE. True by default.
+                      screen: HomeScreen(),
+                      // OPTIONAL VALUE. True by default.
                       pageTransitionAnimation:
                           PageTransitionAnimation.cupertino,
                     );
@@ -93,13 +76,49 @@ class MyDrawer extends StatelessWidget {
                   },
                 ),
                 DrawerLink(
-                  icon: const Icon(Icons.money_outlined),
+                  icon: Icon(color: theme.primary, Icons.category_outlined),
+                  title: "Category",
+                  onPress: () {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: CategoryScreen(),
+                      // OPTIONAL VALUE. True by default.
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
+                    // Navigator.of(context).pushReplacement(
+                    //   MaterialPageRoute(
+                    //     builder: (context) => CategoryScreen(),
+                    //   ),
+                    // );
+                  },
+                ),
+                DrawerLink(
+                  icon: Icon(color: theme.primary, Icons.card_travel_outlined),
+                  title: "Transaction",
+                  onPress: () {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: TransactionScreen(),
+                      // OPTIONAL VALUE. True by default.
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
+                    // Navigator.of(context).pushReplacement(
+                    //   MaterialPageRoute(
+                    //     builder: (context) => TransactionScreen(),
+                    //   ),
+                    // );
+                  },
+                ),
+                DrawerLink(
+                  icon: Icon(color: theme.primary, Icons.money_outlined),
                   title: "Reports",
                   onPress: () {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: SalesScreen(),
-                      withNavBar: false, // OPTIONAL VALUE. True by default.
+                      // OPTIONAL VALUE. True by default.
                       pageTransitionAnimation:
                           PageTransitionAnimation.cupertino,
                     );
@@ -110,50 +129,51 @@ class MyDrawer extends StatelessWidget {
                     // );
                   },
                 ),
+                // DrawerLink(
+                //   icon:  Icon(color: theme.primary,Icons.credit_card),
+                //   title: "Credits",
+                //   onPress: () {
+                //     PersistentNavBarNavigator.pushNewScreen(
+                //       context,
+                //       screen: CreditsScreen(),
+                //     // OPTIONAL VALUE. True by default.
+                //       pageTransitionAnimation:
+                //           PageTransitionAnimation.cupertino,
+                //     );
+                //     // Navigator.of(context).pushReplacement(
+                //     //   MaterialPageRoute(
+                //     //     builder: (context) => CreditsScreen(),
+                //     //   ),
+                //     // );
+                //   },
+                // ),
+                // DrawerLink(
+                //   icon:  Icon(color: theme.primary,Icons.storefront_rounded),
+                //   title: "Stores",
+                //   onPress: () {
+                //     PersistentNavBarNavigator.pushNewScreen(
+                //       context,
+                //       screen: Switchstore(),
+                //     // OPTIONAL VALUE. True by default.
+                //       pageTransitionAnimation:
+                //           PageTransitionAnimation.cupertino,
+                //     );
+                //     // Navigator.of(context).pushReplacement(
+                //     //   MaterialPageRoute(
+                //     //     builder: (context) => Switchstore(),
+                //     //   ),
+                //     // );
+                //   },
+                // ),
                 DrawerLink(
-                  icon: const Icon(Icons.credit_card),
-                  title: "Credits",
-                  onPress: () {
-                    PersistentNavBarNavigator.pushNewScreen(
-                      context,
-                      screen: CreditsScreen(),
-                      withNavBar: false, // OPTIONAL VALUE. True by default.
-                      pageTransitionAnimation:
-                          PageTransitionAnimation.cupertino,
-                    );
-                    // Navigator.of(context).pushReplacement(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => CreditsScreen(),
-                    //   ),
-                    // );
-                  },
-                ),
-                DrawerLink(
-                  icon: const Icon(Icons.storefront_rounded),
-                  title: "Stores",
-                  onPress: () {
-                    PersistentNavBarNavigator.pushNewScreen(
-                      context,
-                      screen: Switchstore(),
-                      withNavBar: false, // OPTIONAL VALUE. True by default.
-                      pageTransitionAnimation:
-                          PageTransitionAnimation.cupertino,
-                    );
-                    // Navigator.of(context).pushReplacement(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => Switchstore(),
-                    //   ),
-                    // );
-                  },
-                ),
-                DrawerLink(
-                  icon: const Icon(Icons.supervised_user_circle),
+                  icon:
+                      Icon(color: theme.primary, Icons.supervised_user_circle),
                   title: "Account",
                   onPress: () {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: AccountScreen(),
-                      withNavBar: false, // OPTIONAL VALUE. True by default.
+                      // OPTIONAL VALUE. True by default.
                       pageTransitionAnimation:
                           PageTransitionAnimation.cupertino,
                     );
@@ -165,13 +185,13 @@ class MyDrawer extends StatelessWidget {
                   },
                 ),
                 DrawerLink(
-                  icon: const Icon(Icons.settings),
+                  icon: Icon(color: theme.primary, Icons.settings),
                   title: "Settings",
                   onPress: () {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: SettingsScreenn(),
-                      withNavBar: false, // OPTIONAL VALUE. True by default.
+                      // OPTIONAL VALUE. True by default.
                       pageTransitionAnimation:
                           PageTransitionAnimation.cupertino,
                     );
@@ -183,13 +203,13 @@ class MyDrawer extends StatelessWidget {
                   },
                 ),
                 DrawerLink(
-                  icon: const Icon(Icons.settings),
+                  icon: Icon(color: theme.primary, Icons.color_lens_outlined),
                   title: "Color Theme",
                   onPress: () {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: ThemeScreen(),
-                      withNavBar: false, // OPTIONAL VALUE. True by default.
+                      // OPTIONAL VALUE. True by default.
                       pageTransitionAnimation:
                           PageTransitionAnimation.cupertino,
                     );

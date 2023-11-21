@@ -12,7 +12,7 @@ class ProductDBHelper {
   static const String colTitle = 'title';
   static const String colCatId = 'catid';
   static const String colDescription = 'desc';
-
+  static const String colType = 'type';
   static const String colStock = 'stock';
   static const String colPrice = 'price';
   //new
@@ -34,7 +34,7 @@ class ProductDBHelper {
             $colDescription TEXT NOT NULL,
             $colStock INTEGER,
             $colPrice DECIMAL,
-  
+            $colType INTEGER,
             $colReatailPrice DECIMAL
           )
       ''',
@@ -49,7 +49,6 @@ class ProductDBHelper {
           SELECT $colStock FROM $tblName where $colId = $id
         ) - $qty WHERE $colId = $id;
     ''');
-    print("success minus");
   }
 
   static Future<int> insert(Product product) async {
@@ -66,7 +65,7 @@ class ProductDBHelper {
     List<Product> product = [];
     List<Map<String, dynamic>> data =
         await db.query(tblName, orderBy: '$colId DESC');
-
+    print(data);
     data.forEach((element) {
       product.add(
         Product(
@@ -78,6 +77,7 @@ class ProductDBHelper {
           stock: int.parse(element[colStock].toString()),
           price: double.parse(element[colPrice].toString()),
           retailPrice: double.parse(element[colReatailPrice].toString()),
+          type: int.parse(element[colType].toString()),
         ),
       );
     });
@@ -89,7 +89,7 @@ class ProductDBHelper {
     final db = await openDb();
     List<Product> product = [];
     List<Map<String, dynamic>> data = await db.query(tblName,
-        where: '$colStock <= 5', orderBy: '$colStock DESC');
+        where: '$colStock <= 5 and $colType = 1', orderBy: '$colStock DESC');
 
     data.forEach((element) {
       product.add(
@@ -102,6 +102,7 @@ class ProductDBHelper {
           stock: int.parse(element[colStock].toString()),
           price: double.parse(element[colPrice].toString()),
           retailPrice: double.parse(element[colReatailPrice].toString()),
+          type: int.parse(element[colType].toString()),
         ),
       );
     });
@@ -168,6 +169,7 @@ class ProductDBHelper {
             stock: int.parse(data.first[colStock].toString()),
             price: double.parse(data.first[colPrice].toString()),
             retailPrice: double.parse(data.first[colReatailPrice].toString()),
+            type: int.parse(data.first[colType].toString()),
           );
   }
   // static Future<List<Product>> getSingleProduct(int id) async {

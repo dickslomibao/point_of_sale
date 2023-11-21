@@ -28,7 +28,7 @@ class AccountDbHelper {
           $colId INTEGER PRIMARY KEY AUTOINCREMENT,
           $colName TEXT NOT NULL,
           $colFeatures TEXT NOT NULL,
-          $colbirthDate TEXT NOT NULL,
+          $colbirthDate DATE,
           $colPin TEXT NOT NULL,
           $colStatus INTEGER DEFAULT 1
           )
@@ -55,8 +55,12 @@ class AccountDbHelper {
   static Future<List<AccountModel>> getList() async {
     final db = await openDb();
     final data = await db.query(tblName, where: '$colId != ?', whereArgs: [1]);
-
     return data.map((e) => AccountModel.fromJson(e)).toList();
+  }
+
+  static Future<List<Map<String, dynamic>>> storeInFirebase() async {
+    final db = await openDb();
+    return await db.query(tblName);
   }
 
   static Future<int> delete(int id) async {

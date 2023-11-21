@@ -9,6 +9,7 @@ class Product {
   int stock;
   double price;
   double retailPrice;
+  int type;
   Product({
     this.id = 0,
     required this.barcode,
@@ -18,6 +19,7 @@ class Product {
     this.stock = 0,
     required this.price,
     required this.retailPrice,
+    required this.type,
   });
 
   Map<String, dynamic> toMap() {
@@ -29,6 +31,7 @@ class Product {
       ProductDBHelper.colStock: stock,
       ProductDBHelper.colPrice: price,
       ProductDBHelper.colReatailPrice: retailPrice,
+      ProductDBHelper.colType: type
     };
   }
 

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/customer_model.dart';
 import '../provider/customer_view_screen_provider.dart';
 import '../provider/print_reciept_provider.dart';
+import '../provider/theme_color.dart';
 
 class TransactionSuccessScreen extends StatelessWidget {
   const TransactionSuccessScreen({
@@ -23,6 +24,7 @@ class TransactionSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    final theme = context.read<ThemeColorProvider>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -68,7 +70,7 @@ class TransactionSuccessScreen extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        "Total price: ${totalPrice}",
+                        "Total price: ${totalPrice.toStringAsFixed(2)}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 20,
@@ -76,7 +78,7 @@ class TransactionSuccessScreen extends StatelessWidget {
                       ),
                       if (cashTendered != 0)
                         Text(
-                          "Cash Tendered: ${cashTendered}",
+                          "Cash Tendered: ${cashTendered.toStringAsFixed(2)}",
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 20,
@@ -84,7 +86,7 @@ class TransactionSuccessScreen extends StatelessWidget {
                         ),
                       if (cashTendered != 0)
                         Text(
-                          "Change: ${change}",
+                          "Change: ${change.toStringAsFixed(2)}",
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 20,
@@ -93,13 +95,16 @@ class TransactionSuccessScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 25,
                 ),
                 Container(
                   height: 52,
                   width: double.infinity,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.primary,
+                    ),
                     onPressed: () async {
                       final read = context.read<PrintRecieptProvider>();
                       await read.initData(orderId);
@@ -228,10 +233,11 @@ class TransactionSuccessScreen extends StatelessWidget {
                         (route) => false,
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       "Back",
                       style: TextStyle(
                         fontSize: 16,
+                        color: theme.primary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

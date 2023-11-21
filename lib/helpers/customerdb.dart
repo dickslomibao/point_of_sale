@@ -43,6 +43,11 @@ class CustomerDBHelper {
     return id;
   }
 
+  static Future<List<Map<String, dynamic>>> storeInFirebase() async {
+    final db = await openDb();
+    return await db.query(tblName);
+  }
+
   static Future<void> firestoreInsert(element) async {
     final db = await openDb();
     await db.insert(tblName, element,
